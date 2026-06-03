@@ -37,14 +37,13 @@ function Dashboard() {
   const { data: monthly } = useQuery({
     queryKey: ["dashboard-monthly"],
     queryFn: async () => {
-      const since = new Date();
-      since.setMonth(since.getMonth() - 11);
-      since.setDate(1);
-      const { data } = await supabase.from("sales_records").select("period_month,revenue,profit,tons").gte("period_month", since.toISOString().slice(0, 10)).is("archived_at", null);
+      const year = new Date().getFullYear();
+      const yearStart = `${year}-01-01`;
+      const yearEnd = `${year}-12-31`;
+      const { data } = await supabase.from("sales_records").select("period_month,revenue,profit,tons").gte("period_month", yearStart).lte("period_month", yearEnd).is("archived_at", null);
       const map = new Map<string, { month: string; revenue: number; profit: number; tons: number }>();
       for (let i = 0; i < 12; i++) {
-        const d = new Date(since); d.setMonth(d.getMonth() + i);
-        const k = d.toISOString().slice(0, 7);
+        const k = `${year}-${String(i + 1).padStart(2, "0")}`;
         map.set(k, { month: k, revenue: 0, profit: 0, tons: 0 });
       }
       (data ?? []).forEach((r) => {
@@ -55,6 +54,7 @@ function Dashboard() {
       return Array.from(map.values());
     },
   });
+
 
   const { data: topOpps } = useQuery({
     queryKey: ["dashboard-top-opps"],
