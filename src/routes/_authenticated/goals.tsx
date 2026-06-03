@@ -1,52 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { Chart, registerables } from "chart.js";
+import { useState } from "react";
+import {
+  Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart,
+  Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from "recharts";
 import { PageHeader } from "@/components/page-header";
-
-Chart.register(...registerables);
 
 export const Route = createFileRoute("/_authenticated/goals")({
   component: GoalsPage,
 });
 
+const revData = [
+  { name: "اليوم 15", revenue: 6, profit: 1 },
+  { name: "اليوم 30", revenue: 9, profit: 1.6 },
+  { name: "اليوم 45", revenue: 12, profit: 2.2 },
+  { name: "اليوم 60", revenue: 14, profit: 2.7 },
+  { name: "اليوم 75", revenue: 17, profit: 3.2 },
+  { name: "اليوم 90", revenue: 20, profit: 3.8 },
+];
+const icpData = [
+  { name: "الواجهات الذكية", value: 35, color: "#0284c7" },
+  { name: "EV Enclosures", value: 25, color: "#38bdf8" },
+  { name: "الطاقة الشمسية", value: 20, color: "#16a34a" },
+  { name: "التصدير", value: 20, color: "#f59e0b" },
+];
+
 function GoalsPage() {
   const [tab, setTab] = useState<"vision" | "roadmap" | "expansion" | "dashboard">("vision");
   const [phase, setPhase] = useState<"engine" | "risk">("engine");
-  const revRef = useRef<HTMLCanvasElement>(null);
-  const icpRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (tab !== "dashboard") return;
-    const charts: Chart[] = [];
-    if (revRef.current) {
-      charts.push(
-        new Chart(revRef.current, {
-          type: "bar",
-          data: {
-            labels: ["اليوم 15", "اليوم 30", "اليوم 45", "اليوم 60", "اليوم 75", "اليوم 90"],
-            datasets: [
-              { label: "الإيرادات (مليون ج.م)", data: [6, 9, 12, 14, 17, 20], backgroundColor: "#0284c7" },
-              { type: "line", label: "الأرباح (مليون ج.م)", data: [1, 1.6, 2.2, 2.7, 3.2, 3.8], borderColor: "#16a34a", backgroundColor: "#16a34a", tension: 0.3 } as any,
-            ],
-          },
-          options: { responsive: true, maintainAspectRatio: false },
-        })
-      );
-    }
-    if (icpRef.current) {
-      charts.push(
-        new Chart(icpRef.current, {
-          type: "doughnut",
-          data: {
-            labels: ["الواجهات الذكية", "EV Enclosures", "الطاقة الشمسية", "التصدير"],
-            datasets: [{ data: [35, 25, 20, 20], backgroundColor: ["#0284c7", "#38bdf8", "#16a34a", "#f59e0b"] }],
-          },
-          options: { responsive: true, maintainAspectRatio: false },
-        })
-      );
-    }
-    return () => charts.forEach((c) => c.destroy());
-  }, [tab]);
 
   const tabs = [
     { id: "vision", label: "الرؤية" },
