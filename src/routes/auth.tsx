@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { setLocale } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   head: () => ({ meta: [{ title: "Sign in — Hegazy GTM OS" }] }),
   component: AuthPage,
 });
