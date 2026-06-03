@@ -14,16 +14,546 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_logs: {
+        Row: {
+          action: Database["public"]["Enums"]["activity_action"]
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          meta: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["activity_action"]
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          meta?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["activity_action"]
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          meta?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      app_settings: {
+        Row: {
+          default_locale: string
+          default_theme: string
+          id: number
+          logo_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          default_locale?: string
+          default_theme?: string
+          id?: number
+          logo_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          default_locale?: string
+          default_theme?: string
+          id?: number
+          logo_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      companies: {
+        Row: {
+          archived_at: string | null
+          contact_person: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          linkedin: string | null
+          location: string | null
+          logo_url: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          sector_id: string | null
+          status: string | null
+          type: Database["public"]["Enums"]["company_type"]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          contact_person?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          linkedin?: string | null
+          location?: string | null
+          logo_url?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          sector_id?: string | null
+          status?: string | null
+          type?: Database["public"]["Enums"]["company_type"]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          contact_person?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          linkedin?: string | null
+          location?: string | null
+          logo_url?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          sector_id?: string | null
+          status?: string | null
+          type?: Database["public"]["Enums"]["company_type"]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "companies_sector_id_fkey"
+            columns: ["sector_id"]
+            isOneToOne: false
+            referencedRelation: "sectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      opportunities: {
+        Row: {
+          archived_at: string | null
+          blockers: string | null
+          company_id: string
+          created_at: string
+          deadline: string | null
+          expected_profit: number | null
+          expected_revenue: number | null
+          expected_tons: number | null
+          id: string
+          next_action: string | null
+          owner_id: string | null
+          pipeline_status: Database["public"]["Enums"]["pipeline_status"]
+          product_id: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          blockers?: string | null
+          company_id: string
+          created_at?: string
+          deadline?: string | null
+          expected_profit?: number | null
+          expected_revenue?: number | null
+          expected_tons?: number | null
+          id?: string
+          next_action?: string | null
+          owner_id?: string | null
+          pipeline_status?: Database["public"]["Enums"]["pipeline_status"]
+          product_id?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          blockers?: string | null
+          company_id?: string
+          created_at?: string
+          deadline?: string | null
+          expected_profit?: number | null
+          expected_revenue?: number | null
+          expected_tons?: number | null
+          id?: string
+          next_action?: string | null
+          owner_id?: string | null
+          pipeline_status?: Database["public"]["Enums"]["pipeline_status"]
+          product_id?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunities_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          default_margin: number | null
+          description: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          sector_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          default_margin?: number | null
+          description?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          sector_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          default_margin?: number | null
+          description?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          sector_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_sector_id_fkey"
+            columns: ["sector_id"]
+            isOneToOne: false
+            referencedRelation: "sectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          locale: string
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          locale?: string
+          theme?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          locale?: string
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sales_records: {
+        Row: {
+          archived_at: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          margin: number | null
+          opportunity_id: string | null
+          period_month: string
+          product_id: string | null
+          profit: number
+          revenue: number
+          tons: number
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          margin?: number | null
+          opportunity_id?: string | null
+          period_month: string
+          product_id?: string | null
+          profit?: number
+          revenue?: number
+          tons?: number
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          margin?: number | null
+          opportunity_id?: string | null
+          period_month?: string
+          product_id?: string | null
+          profit?: number
+          revenue?: number
+          tons?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_records_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_records_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_records_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sectors: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          id: string
+          name_ar: string
+          name_en: string
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          name_ar: string
+          name_en: string
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      task_comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          task_id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          task_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          task_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "task_comments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          archived_at: string | null
+          assignee_id: string | null
+          company_id: string | null
+          created_at: string
+          created_by: string | null
+          deadline: string | null
+          description: string | null
+          id: string
+          opportunity_id: string | null
+          priority: Database["public"]["Enums"]["task_priority"]
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          assignee_id?: string | null
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          opportunity_id?: string | null
+          priority?: Database["public"]["Enums"]["task_priority"]
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          assignee_id?: string | null
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          opportunity_id?: string | null
+          priority?: Database["public"]["Enums"]["task_priority"]
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      activity_action:
+        | "created"
+        | "edited"
+        | "archived"
+        | "restored"
+        | "status_changed"
+      app_role: "owner" | "admin"
+      company_type: "customer" | "target" | "opportunity"
+      pipeline_status:
+        | "lead"
+        | "contacted"
+        | "qualified"
+        | "negotiation"
+        | "won"
+        | "lost"
+      task_priority: "low" | "medium" | "high" | "urgent"
+      task_status: "todo" | "in_progress" | "blocked" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +680,26 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      activity_action: [
+        "created",
+        "edited",
+        "archived",
+        "restored",
+        "status_changed",
+      ],
+      app_role: ["owner", "admin"],
+      company_type: ["customer", "target", "opportunity"],
+      pipeline_status: [
+        "lead",
+        "contacted",
+        "qualified",
+        "negotiation",
+        "won",
+        "lost",
+      ],
+      task_priority: ["low", "medium", "high", "urgent"],
+      task_status: ["todo", "in_progress", "blocked", "completed"],
+    },
   },
 } as const
