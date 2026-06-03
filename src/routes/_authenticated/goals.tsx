@@ -235,16 +235,29 @@ function GoalsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2 rounded-xl border bg-card p-5 shadow-sm">
               <h3 className="font-bold mb-3">التوقعات المالية (90 Day Revenue vs Profit)</h3>
-              <div style={{ position: "relative", height: 320 }}>
-                <canvas ref={revRef} />
-              </div>
+              <ResponsiveContainer width="100%" height={320}>
+                <ComposedChart data={revData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="revenue" name="الإيرادات (M)" fill="#0284c7" />
+                  <Line type="monotone" dataKey="profit" name="الأرباح (M)" stroke="#16a34a" strokeWidth={2} />
+                </ComposedChart>
+              </ResponsiveContainer>
             </div>
             <div className="space-y-4">
               <div className="rounded-xl border bg-card p-5 shadow-sm">
                 <h3 className="font-bold mb-3">توزيع الفرص حسب الـ ICP</h3>
-                <div style={{ position: "relative", height: 200 }}>
-                  <canvas ref={icpRef} />
-                </div>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie data={icpData} dataKey="value" nameKey="name" innerRadius={40} outerRadius={70}>
+                      {icpData.map((d) => <Cell key={d.name} fill={d.color} />)}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
               <div className="rounded-xl border bg-card p-5 shadow-sm">
                 <h3 className="font-bold mb-3">أهم مهام اليوم</h3>
