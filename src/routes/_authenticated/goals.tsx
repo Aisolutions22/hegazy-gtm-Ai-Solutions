@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart,
+  Bar, CartesianGrid, Cell, Legend, Line, ComposedChart,
   Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 import { PageHeader } from "@/components/page-header";
