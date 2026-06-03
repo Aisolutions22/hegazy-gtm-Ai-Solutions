@@ -16,6 +16,6 @@ export async function logActivity(
     entity_type: entityType,
     entity_id: entityId,
     action,
-    meta,
+    meta: meta as never,
   });
 }
