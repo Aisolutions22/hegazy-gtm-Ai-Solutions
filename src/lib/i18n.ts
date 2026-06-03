@@ -1,0 +1,257 @@
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
+const resources = {
+  ar: {
+    translation: {
+      app: {
+        name: "حجازي GTM OS 2026",
+        tagline: "نظام تشغيل النمو والتسويق التنفيذي",
+      },
+      auth: {
+        signIn: "تسجيل الدخول",
+        signUp: "إنشاء حساب",
+        email: "البريد الإلكتروني",
+        password: "كلمة المرور",
+        fullName: "الاسم الكامل",
+        signInCta: "دخول",
+        signUpCta: "إنشاء",
+        switchToSignUp: "ليس لديك حساب؟ سجل الآن",
+        switchToSignIn: "لديك حساب؟ سجل دخول",
+        signOut: "تسجيل خروج",
+        invalidCreds: "بيانات الدخول غير صحيحة",
+        accountCreated: "تم إنشاء الحساب بنجاح",
+      },
+      nav: {
+        dashboard: "لوحة القيادة",
+        currentSituation: "الوضع الحالي",
+        gtm: "محرك GTM",
+        companies: "الشركات",
+        products: "المنتجات",
+        opportunities: "الفرص",
+        analytics: "تحليلات المبيعات",
+        tasks: "المهام",
+        calendar: "التقويم",
+        meetings: "الاجتماعات والقرارات",
+        intelligence: "المعرفة الاستراتيجية",
+        competitors: "المنافسون",
+        goals: "الأهداف وخارطة الطريق",
+        activity: "سجل النشاط",
+        archive: "الأرشيف",
+        settings: "الإعدادات",
+        sales: "سجل المبيعات",
+      },
+      common: {
+        search: "بحث",
+        add: "إضافة",
+        edit: "تعديل",
+        save: "حفظ",
+        cancel: "إلغاء",
+        archive: "أرشفة",
+        restore: "استعادة",
+        delete: "حذف",
+        filter: "تصفية",
+        all: "الكل",
+        loading: "جارٍ التحميل…",
+        empty: "لا توجد بيانات بعد",
+        confirm: "تأكيد",
+        actions: "إجراءات",
+        status: "الحالة",
+        name: "الاسم",
+        type: "النوع",
+        sector: "القطاع",
+        date: "التاريخ",
+        owner: "المسؤول",
+        deadline: "الموعد النهائي",
+        priority: "الأولوية",
+        comingSoon: "قيد التطوير في الإصدار القادم",
+        comingSoonDesc: "هذا القسم جزء من خارطة الطريق وسيُفتح قريبًا.",
+      },
+      dashboard: {
+        title: "لوحة القيادة التنفيذية",
+        revenueYtd: "الإيرادات منذ بداية العام",
+        profitYtd: "الأرباح منذ بداية العام",
+        avgMargin: "متوسط الهامش",
+        tonsYtd: "الأطنان المباعة",
+        activeCustomers: "العملاء النشطون",
+        openOpps: "الفرص المفتوحة",
+        todayFocus: "أولويات اليوم",
+        topOpps: "أبرز الفرص",
+        upcomingDeadlines: "المواعيد القادمة",
+        recentActivity: "النشاط الأخير",
+        monthlyTrend: "الاتجاه الشهري",
+        revenue: "الإيرادات",
+        profit: "الأرباح",
+        tons: "الأطنان",
+        noTasks: "لا توجد مهام مستحقة اليوم",
+        noOpps: "لا توجد فرص مفتوحة",
+      },
+      companies: {
+        title: "الشركات",
+        new: "شركة جديدة",
+        types: { customer: "عميل حالي", target: "حساب مستهدف", opportunity: "فرصة" },
+        fields: {
+          name: "اسم الشركة",
+          type: "النوع",
+          sector: "القطاع",
+          website: "الموقع الإلكتروني",
+          linkedin: "لينكدإن",
+          location: "الموقع",
+          contactPerson: "جهة الاتصال",
+          phone: "الهاتف",
+          email: "البريد",
+          notes: "ملاحظات",
+          status: "الحالة",
+        },
+        tabs: {
+          profile: "الملف",
+          sales: "المبيعات",
+          opportunities: "الفرص",
+          tasks: "المهام",
+          timeline: "النشاط",
+        },
+      },
+      products: {
+        title: "المنتجات",
+        new: "منتج جديد",
+        defaultMargin: "متوسط الهامش %",
+      },
+      opportunities: {
+        title: "الفرص",
+        new: "فرصة جديدة",
+        pipeline: {
+          lead: "عميل محتمل",
+          contacted: "تم التواصل",
+          qualified: "مؤهل",
+          negotiation: "تفاوض",
+          won: "مكتسبة",
+          lost: "مفقودة",
+        },
+        kanban: "كانبان",
+        table: "جدول",
+        expectedTons: "أطنان متوقعة",
+        expectedRevenue: "إيراد متوقع",
+        expectedProfit: "ربح متوقع",
+        blockers: "العوائق",
+        nextAction: "الإجراء التالي",
+        company: "الشركة",
+        product: "المنتج",
+      },
+      tasks: {
+        title: "المهام",
+        new: "مهمة جديدة",
+        statuses: { todo: "قائمة", in_progress: "قيد التنفيذ", blocked: "متعثرة", completed: "منجزة" },
+        priorities: { low: "منخفضة", medium: "متوسطة", high: "عالية", urgent: "عاجلة" },
+      },
+      sales: {
+        title: "سجل المبيعات",
+        new: "سجل جديد",
+        period: "الشهر",
+        revenue: "الإيراد",
+        profit: "الربح",
+        tons: "الأطنان",
+        margin: "الهامش %",
+      },
+      activity: {
+        title: "سجل النشاط",
+        actions: {
+          created: "أنشأ",
+          edited: "عدّل",
+          archived: "أرشف",
+          restored: "استعاد",
+          status_changed: "غيّر الحالة",
+        },
+      },
+      archive: { title: "الأرشيف", empty: "الأرشيف فارغ" },
+      settings: { title: "الإعدادات", profile: "الملف الشخصي", appearance: "المظهر", users: "المستخدمون", theme: "السمة", language: "اللغة", light: "فاتح", dark: "داكن" },
+    },
+  },
+  en: {
+    translation: {
+      app: { name: "Hegazy GTM OS 2026", tagline: "Executive Growth & Revenue Operating System" },
+      auth: {
+        signIn: "Sign In", signUp: "Sign Up", email: "Email", password: "Password", fullName: "Full Name",
+        signInCta: "Sign In", signUpCta: "Create Account",
+        switchToSignUp: "No account? Sign up", switchToSignIn: "Have an account? Sign in",
+        signOut: "Sign Out", invalidCreds: "Invalid credentials", accountCreated: "Account created successfully",
+      },
+      nav: {
+        dashboard: "Dashboard", currentSituation: "Current Situation", gtm: "GTM Engine",
+        companies: "Companies", products: "Products", opportunities: "Opportunities",
+        analytics: "Sales Analytics", tasks: "Tasks", calendar: "Calendar",
+        meetings: "Meetings & Decisions", intelligence: "Strategic Intelligence",
+        competitors: "Competitors", goals: "Goals & Roadmap", activity: "Activity Log",
+        archive: "Archive", settings: "Settings", sales: "Sales Records",
+      },
+      common: {
+        search: "Search", add: "Add", edit: "Edit", save: "Save", cancel: "Cancel",
+        archive: "Archive", restore: "Restore", delete: "Delete", filter: "Filter",
+        all: "All", loading: "Loading…", empty: "Nothing yet", confirm: "Confirm",
+        actions: "Actions", status: "Status", name: "Name", type: "Type", sector: "Sector",
+        date: "Date", owner: "Owner", deadline: "Deadline", priority: "Priority",
+        comingSoon: "Coming in the next release", comingSoonDesc: "This section is on the roadmap and will open soon.",
+      },
+      dashboard: {
+        title: "Executive Dashboard", revenueYtd: "Revenue YTD", profitYtd: "Profit YTD",
+        avgMargin: "Avg. Margin", tonsYtd: "Tons Sold", activeCustomers: "Active Customers",
+        openOpps: "Open Opportunities", todayFocus: "Today's Focus", topOpps: "Top Opportunities",
+        upcomingDeadlines: "Upcoming Deadlines", recentActivity: "Recent Activity",
+        monthlyTrend: "Monthly Trend", revenue: "Revenue", profit: "Profit", tons: "Tons",
+        noTasks: "No tasks due today", noOpps: "No open opportunities",
+      },
+      companies: {
+        title: "Companies", new: "New Company",
+        types: { customer: "Current Customer", target: "Target Account", opportunity: "Opportunity" },
+        fields: { name: "Company name", type: "Type", sector: "Sector", website: "Website", linkedin: "LinkedIn", location: "Location", contactPerson: "Contact person", phone: "Phone", email: "Email", notes: "Notes", status: "Status" },
+        tabs: { profile: "Profile", sales: "Sales", opportunities: "Opportunities", tasks: "Tasks", timeline: "Timeline" },
+      },
+      products: { title: "Products", new: "New Product", defaultMargin: "Avg. Margin %" },
+      opportunities: {
+        title: "Opportunities", new: "New Opportunity",
+        pipeline: { lead: "Lead", contacted: "Contacted", qualified: "Qualified", negotiation: "Negotiation", won: "Won", lost: "Lost" },
+        kanban: "Kanban", table: "Table",
+        expectedTons: "Expected Tons", expectedRevenue: "Expected Revenue", expectedProfit: "Expected Profit",
+        blockers: "Blockers", nextAction: "Next Action", company: "Company", product: "Product",
+      },
+      tasks: {
+        title: "Tasks", new: "New Task",
+        statuses: { todo: "To Do", in_progress: "In Progress", blocked: "Blocked", completed: "Completed" },
+        priorities: { low: "Low", medium: "Medium", high: "High", urgent: "Urgent" },
+      },
+      sales: { title: "Sales Records", new: "New Record", period: "Month", revenue: "Revenue", profit: "Profit", tons: "Tons", margin: "Margin %" },
+      activity: {
+        title: "Activity Log",
+        actions: { created: "created", edited: "edited", archived: "archived", restored: "restored", status_changed: "changed status of" },
+      },
+      archive: { title: "Archive", empty: "Archive is empty" },
+      settings: { title: "Settings", profile: "Profile", appearance: "Appearance", users: "Users", theme: "Theme", language: "Language", light: "Light", dark: "Dark" },
+    },
+  },
+};
+
+if (!i18n.isInitialized) {
+  i18n.use(initReactI18next).init({
+    resources,
+    lng: typeof window !== "undefined" ? localStorage.getItem("locale") || "ar" : "ar",
+    fallbackLng: "en",
+    interpolation: { escapeValue: false },
+  });
+}
+
+export function setLocale(lng: "ar" | "en") {
+  i18n.changeLanguage(lng);
+  if (typeof window !== "undefined") {
+    localStorage.setItem("locale", lng);
+    document.documentElement.lang = lng;
+    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
+  }
+}
+
+export function applyInitialLocale() {
+  if (typeof window === "undefined") return;
+  const lng = (localStorage.getItem("locale") as "ar" | "en") || "ar";
+  document.documentElement.lang = lng;
+  document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
+}
+
+export default i18n;
