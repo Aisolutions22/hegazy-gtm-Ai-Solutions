@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/page-header";
@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus, Archive as ArchiveIcon } from "lucide-react";
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
+import { useCompaniesList, useSectors, useArchiveCompany } from "@/hooks/use-company";
 
 export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
@@ -27,24 +28,14 @@ function CompaniesPage() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { data: companies = [] } = useQuery({
-    queryKey: ["companies"],
-    queryFn: async () => {
-      const { data } = await supabase.from("companies").select("*, sector:sectors(name_en,name_ar)").is("archived_at", null).order("created_at", { ascending: false });
-      return data ?? [];
-    },
-  });
-  const { data: sectors = [] } = useQuery({
-    queryKey: ["sectors"],
-    queryFn: async () => (await supabase.from("sectors").select("*").is("archived_at", null)).data ?? [],
-  });
+  const { data: companies = [] } = useCompaniesList();
+  const { data: sectors = [] } = useSectors();
+  const archive = useArchiveCompany();
 
   const filtered = companies.filter((c) => c.name.toLowerCase().includes(q.toLowerCase()));
 
   async function archiveCompany(id: string) {
-    await supabase.from("companies").update({ archived_at: new Date().toISOString() }).eq("id", id);
-    await logActivity("company", id, "archived");
-    qc.invalidateQueries({ queryKey: ["companies"] });
+    await archive.mutateAsync(id);
     toast.success(t("common.archive"));
   }
 
