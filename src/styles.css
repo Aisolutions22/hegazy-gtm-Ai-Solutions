@@ -155,4 +155,52 @@
   .gradient-primary {
     background: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 60%, white));
   }
+  .metal-card {
+    background:
+      linear-gradient(135deg,
+        color-mix(in oklab, var(--color-card) 96%, white 4%) 0%,
+        var(--color-card) 50%,
+        color-mix(in oklab, var(--color-card) 92%, var(--color-foreground) 4%) 100%);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+      0 1px 2px color-mix(in oklab, var(--color-foreground) 8%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-border) 80%, transparent);
+  }
+  .bg-coil {
+    background-image: repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-foreground) 3%, transparent) 0px,
+      color-mix(in oklab, var(--color-foreground) 3%, transparent) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  }
+  .aluminium-divider {
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      color-mix(in oklab, var(--color-foreground) 12%, transparent) 20%,
+      color-mix(in oklab, var(--color-foreground) 18%, transparent) 50%,
+      color-mix(in oklab, var(--color-foreground) 12%, transparent) 80%,
+      transparent);
+  }
+  .industrial-backdrop {
+    position: relative;
+    isolation: isolate;
+  }
+  .industrial-backdrop::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.5;
+    background:
+      radial-gradient(1200px 400px at 0% -10%, color-mix(in oklab, var(--color-primary) 6%, transparent), transparent 60%),
+      radial-gradient(900px 300px at 100% 0%, color-mix(in oklab, var(--color-primary) 4%, transparent), transparent 60%),
+      repeating-linear-gradient(115deg,
+        color-mix(in oklab, var(--color-foreground) 2%, transparent) 0 1px,
+        transparent 1px 14px);
+    mask-image: linear-gradient(180deg, black, transparent 70%);
+  }
 }
