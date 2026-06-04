@@ -100,6 +100,11 @@ const resources = {
         intelligence: "الذكاء",
         system: "النظام",
       },
+      commandPalette: {
+        trigger: "بحث شامل…",
+        placeholder: "ابحث في الشركات، المنتجات، الفرص، المهام…",
+        empty: "لا توجد نتائج",
+      },
       companies: {
         title: "الشركات",
         new: "شركة جديدة",
@@ -224,6 +229,11 @@ const resources = {
       navGroups: {
         gtm: "GTM", revenue: "Revenue", execution: "Execution",
         intelligence: "Intelligence", system: "System",
+      },
+      commandPalette: {
+        trigger: "Search everything…",
+        placeholder: "Search companies, products, opportunities, tasks…",
+        empty: "No results",
       },
       companies: {
         title: "Companies", new: "New Company",

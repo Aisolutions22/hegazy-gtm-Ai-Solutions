@@ -12,7 +12,7 @@ import {
   SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { CommandPalette } from "@/components/command-palette";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -122,6 +122,7 @@ function Topbar() {
   const { user, role, signOut } = useAuth();
   const navigate = useNavigate();
   const [theme, setThemeState] = useState<"light" | "dark">("light");
+  const [cmdOpen, setCmdOpen] = useState(false);
   useEffect(() => setThemeState(getTheme()), []);
 
   const toggleTheme = () => {
@@ -132,14 +133,23 @@ function Topbar() {
   const toggleLocale = () => setLocale(i18n.language === "ar" ? "en" : "ar");
 
   const initial = (user?.email ?? "U").substring(0, 1).toUpperCase();
+  const isMac = typeof navigator !== "undefined" && /Mac/i.test(navigator.platform);
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/80 glass px-4">
       <SidebarTrigger />
-      <div className="relative max-w-md flex-1">
-        <Search className="pointer-events-none absolute top-1/2 -translate-y-1/2 start-3 h-4 w-4 text-muted-foreground" />
-        <Input placeholder={t("common.search")} className="ps-9 bg-muted/50 border-0" />
-      </div>
+      <button
+        type="button"
+        onClick={() => setCmdOpen(true)}
+        className="relative max-w-md flex-1 flex items-center gap-2 h-9 px-3 rounded-md bg-muted/50 text-start text-sm text-muted-foreground hover:bg-muted transition-colors"
+      >
+        <Search className="h-4 w-4 shrink-0" />
+        <span className="flex-1 truncate">{t("commandPalette.trigger")}</span>
+        <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border bg-background px-1.5 py-0.5 text-[10px] font-mono">
+          {isMac ? "⌘" : "Ctrl"}K
+        </kbd>
+      </button>
+      <CommandPalette open={cmdOpen} onOpenChange={setCmdOpen} />
       <div className="ms-auto flex items-center gap-1">
         <Button variant="ghost" size="icon" onClick={toggleLocale} title="Language"><Globe className="h-4 w-4" /></Button>
         <Button variant="ghost" size="icon" onClick={toggleTheme} title="Theme">

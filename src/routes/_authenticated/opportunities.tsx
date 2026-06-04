@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/page-header";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { fmtCurrency } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
+import { useOpportunities, useAllCompaniesLite, useAllProductsLite, useMoveOpportunityStage } from "@/hooks/use-opportunities";
 
 const STAGES = ["lead", "contacted", "qualified", "negotiation", "won", "lost"] as const;
 
@@ -26,18 +27,14 @@ function OppPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
 
-  const { data: opps = [] } = useQuery({
-    queryKey: ["opps"],
-    queryFn: async () => (await supabase.from("opportunities").select("*, company:companies(name), product:products(name_en)").is("archived_at", null).order("created_at", { ascending: false })).data ?? [],
-  });
-  const { data: companies = [] } = useQuery({ queryKey: ["all-companies"], queryFn: async () => (await supabase.from("companies").select("id,name").is("archived_at", null)).data ?? [] });
-  const { data: products = [] } = useQuery({ queryKey: ["all-products"], queryFn: async () => (await supabase.from("products").select("id,name_en").is("archived_at", null)).data ?? [] });
+  const { data: opps = [] } = useOpportunities();
+  const { data: companies = [] } = useAllCompaniesLite();
+  const { data: products = [] } = useAllProductsLite();
+  const moveStageMut = useMoveOpportunityStage();
 
   async function moveStage(id: string, status: string) {
-    const { error } = await supabase.from("opportunities").update({ pipeline_status: status as never }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    await logActivity("opportunity", id, "status_changed", { to: status });
-    qc.invalidateQueries({ queryKey: ["opps"] });
+    try { await moveStageMut.mutateAsync({ id, status }); }
+    catch (e) { toast.error((e as Error).message); }
   }
 
   return (

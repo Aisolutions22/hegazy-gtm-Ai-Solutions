@@ -1,17 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
-import { fmtCurrency, fmtNumber, fmtPercent, fmtDate, localDateISO, addDaysISO } from "@/lib/format";
+import { fmtCurrency, fmtNumber, fmtPercent, fmtDate } from "@/lib/format";
 import {
   TrendingUp, DollarSign, Percent, Package, Users, Target,
   CalendarClock, ListChecks, Sparkles, Activity as ActivityIcon, Factory,
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend } from "recharts";
+import {
+  useDashboardKpis, useDashboardMonthly, useTopOpportunities,
+  useTodayTasks, useUpcomingDeadlines, useRecentActivities,
+} from "@/hooks/use-dashboard";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -20,103 +22,13 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 function Dashboard() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
-  const year = new Date().getFullYear();
 
-  const { data: kpis } = useQuery({
-    queryKey: ["dashboard-kpis"],
-    queryFn: async () => {
-      const yearStart = `${year}-01-01`;
-      const [sales, customers, opps] = await Promise.all([
-        supabase.from("sales_records").select("revenue,profit,tons").gte("period_month", yearStart).is("archived_at", null),
-        supabase.from("companies").select("id", { count: "exact", head: true }).eq("type", "customer").is("archived_at", null),
-        supabase.from("opportunities").select("id", { count: "exact", head: true }).not("pipeline_status", "in", "(won,lost)").is("archived_at", null),
-      ]);
-      const rev = sales.data?.reduce((s, r) => s + Number(r.revenue || 0), 0) ?? 0;
-      const profit = sales.data?.reduce((s, r) => s + Number(r.profit || 0), 0) ?? 0;
-      const tons = sales.data?.reduce((s, r) => s + Number(r.tons || 0), 0) ?? 0;
-      const margin = rev > 0 ? (profit / rev) * 100 : 0;
-      return { rev, profit, tons, margin, customers: customers.count ?? 0, openOpps: opps.count ?? 0 };
-    },
-  });
-
-  const { data: monthly } = useQuery({
-    queryKey: ["dashboard-monthly", year],
-    queryFn: async () => {
-      const yearStart = `${year}-01-01`;
-      const yearEnd = `${year}-12-31`;
-      const { data } = await supabase.from("sales_records").select("period_month,revenue,profit,tons").gte("period_month", yearStart).lte("period_month", yearEnd).is("archived_at", null);
-      const map = new Map<string, { month: string; revenue: number; profit: number; tons: number }>();
-      for (let i = 0; i < 12; i++) {
-        const k = `${year}-${String(i + 1).padStart(2, "0")}`;
-        map.set(k, { month: k.slice(5), revenue: 0, profit: 0, tons: 0 });
-      }
-      (data ?? []).forEach((r) => {
-        const k = String(r.period_month).slice(0, 7);
-        const e = map.get(k); if (!e) return;
-        e.revenue += Number(r.revenue); e.profit += Number(r.profit); e.tons += Number(r.tons);
-      });
-      return Array.from(map.values());
-    },
-  });
-
-  const { data: topOpps } = useQuery({
-    queryKey: ["dashboard-top-opps"],
-    queryFn: async () => {
-      const { data } = await supabase.from("opportunities").select("id,title,expected_revenue,pipeline_status,company:companies(name)").not("pipeline_status", "in", "(won,lost)").is("archived_at", null).order("expected_revenue", { ascending: false }).limit(5);
-      return data ?? [];
-    },
-  });
-
-  const { data: todayTasks } = useQuery({
-    queryKey: ["dashboard-today"],
-    queryFn: async () => {
-      // Use LOCAL calendar date — avoid UTC drift from toISOString()
-      const today = localDateISO();
-      const { data } = await supabase
-        .from("tasks")
-        .select("id,title,priority,deadline,status")
-        .lte("deadline", today)
-        .neq("status", "completed")
-        .is("archived_at", null)
-        .order("deadline")
-        .limit(20);
-      // Defensive client-side filter: any non-completed task with deadline <= today
-      const rows = (data ?? []).filter((t) => t.status !== "completed" && t.deadline && String(t.deadline) <= today);
-      return rows.slice(0, 6);
-    },
-  });
-
-  const { data: upcoming } = useQuery({
-    queryKey: ["dashboard-upcoming"],
-    queryFn: async () => {
-      // Upcoming = strictly AFTER local today, within next 7 days.
-      // Using local-date math guarantees no overlap or gap with Today's Focus.
-      const startStr = addDaysISO(1);
-      const endStr = addDaysISO(7);
-      const [tasks, opps] = await Promise.all([
-        supabase.from("tasks").select("id,title,deadline,priority").gte("deadline", startStr).lte("deadline", endStr).neq("status", "completed").is("archived_at", null),
-        supabase.from("opportunities").select("id,title,deadline,company:companies(name)").gte("deadline", startStr).lte("deadline", endStr).not("pipeline_status", "in", "(won,lost)").is("archived_at", null),
-      ]);
-      type Row = { id: string; kind: "task" | "opp"; title: string; deadline: string; meta?: string };
-      const rows: Row[] = [
-        ...(tasks.data ?? []).map((r): Row => ({ id: `t-${r.id}`, kind: "task", title: r.title, deadline: r.deadline as string, meta: r.priority })),
-        ...(opps.data ?? []).map((r): Row => ({ id: `o-${r.id}`, kind: "opp", title: r.title || "—", deadline: r.deadline as string, meta: r.company?.name })),
-      ];
-      return rows.sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 8);
-    },
-  });
-
-  const { data: activities } = useQuery({
-    queryKey: ["dashboard-activities"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("activity_logs")
-        .select("id,action,entity_type,entity_id,created_at,meta")
-        .order("created_at", { ascending: false })
-        .limit(8);
-      return data ?? [];
-    },
-  });
+  const { data: kpis } = useDashboardKpis();
+  const { data: monthly } = useDashboardMonthly();
+  const { data: topOpps } = useTopOpportunities();
+  const { data: todayTasks } = useTodayTasks();
+  const { data: upcoming } = useUpcomingDeadlines();
+  const { data: activities } = useRecentActivities();
 
   const kpiCards = [
     { label: t("dashboard.revenueYtd"), value: fmtCurrency(kpis?.rev, locale), icon: DollarSign },
