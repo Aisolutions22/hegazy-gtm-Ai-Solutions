@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { fmtCurrency, fmtDate, fmtMonth } from "@/lib/format";
 import { ArrowLeft } from "lucide-react";
+import {
+  useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks, useCompanyActivity,
+} from "@/hooks/use-company";
 
 export const Route = createFileRoute("/_authenticated/companies/$id")({
   component: Company360,
@@ -18,26 +19,11 @@ function Company360() {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
-  const { data: company } = useQuery({
-    queryKey: ["company", id],
-    queryFn: async () => (await supabase.from("companies").select("*, sector:sectors(name_en)").eq("id", id).single()).data,
-  });
-  const { data: opps = [] } = useQuery({
-    queryKey: ["company-opps", id],
-    queryFn: async () => (await supabase.from("opportunities").select("*").eq("company_id", id).is("archived_at", null)).data ?? [],
-  });
-  const { data: sales = [] } = useQuery({
-    queryKey: ["company-sales", id],
-    queryFn: async () => (await supabase.from("sales_records").select("*, product:products(name_en)").eq("company_id", id).is("archived_at", null).order("period_month", { ascending: false })).data ?? [],
-  });
-  const { data: tasks = [] } = useQuery({
-    queryKey: ["company-tasks", id],
-    queryFn: async () => (await supabase.from("tasks").select("*").eq("company_id", id).is("archived_at", null)).data ?? [],
-  });
-  const { data: activity = [] } = useQuery({
-    queryKey: ["company-activity", id],
-    queryFn: async () => (await supabase.from("activity_logs").select("*").eq("entity_type", "company").eq("entity_id", id).order("created_at", { ascending: false }).limit(50)).data ?? [],
-  });
+  const { data: company } = useCompany(id);
+  const { data: opps = [] } = useCompanyOpportunities(id);
+  const { data: sales = [] } = useCompanySales(id);
+  const { data: tasks = [] } = useCompanyTasks(id);
+  const { data: activity = [] } = useCompanyActivity(id);
 
   if (!company) return <p className="text-muted-foreground">{t("common.loading")}</p>;
 
