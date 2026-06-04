@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 
 const navGroups = (t: (k: string) => string) => [
   {
-    label: "GTM",
+    label: t("navGroups.gtm"),
     items: [
       { to: "/dashboard", icon: LayoutDashboard, label: t("nav.dashboard") },
       { to: "/current-situation", icon: Compass, label: t("nav.currentSituation") },
@@ -33,7 +33,7 @@ const navGroups = (t: (k: string) => string) => [
     ],
   },
   {
-    label: "CRM",
+    label: t("navGroups.revenue"),
     items: [
       { to: "/companies", icon: Building2, label: t("nav.companies") },
       { to: "/products", icon: Package, label: t("nav.products") },
@@ -43,7 +43,7 @@ const navGroups = (t: (k: string) => string) => [
     ],
   },
   {
-    label: "Execution",
+    label: t("navGroups.execution"),
     items: [
       { to: "/tasks", icon: ListChecks, label: t("nav.tasks") },
       { to: "/calendar", icon: CalendarDays, label: t("nav.calendar") },
@@ -51,7 +51,7 @@ const navGroups = (t: (k: string) => string) => [
     ],
   },
   {
-    label: "Strategy",
+    label: t("navGroups.intelligence"),
     items: [
       { to: "/intelligence", icon: Brain, label: t("nav.intelligence") },
       { to: "/competitors", icon: Swords, label: t("nav.competitors") },
@@ -59,7 +59,7 @@ const navGroups = (t: (k: string) => string) => [
     ],
   },
   {
-    label: "System",
+    label: t("navGroups.system"),
     items: [
       { to: "/activity", icon: Activity, label: t("nav.activity") },
       { to: "/archive", icon: Archive, label: t("nav.archive") },
