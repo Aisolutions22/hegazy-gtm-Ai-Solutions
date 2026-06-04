@@ -1,102 +1,86 @@
+# Dashboard UX Refactor — Executive Operating System
 
-# Hegazy GTM OS 2026 — V1 Plan (Core)
+Tighten the dashboard into a dense, executive-grade cockpit with an aluminium industrial visual identity. No new backend features — only UX, hierarchy, regrouping, and presentation polish using data already queried.
 
-A production-grade internal GTM operating system. V1 focuses on the foundation and the most-used modules. Remaining modules (Sales Analytics, GTM/ICP, Calendar, Meetings, Strategic Intelligence, Competitors, Goals, Current Situation) will be added in follow-up iterations on top of the same schema and shell.
+## 1. Sidebar regrouping (`src/components/app-shell.tsx`)
 
-## V1 Scope
+Restructure `navGroups` into the 5 requested groups:
 
-**In:** Auth, role gating (Owner/Admin), App Shell (sidebar + topbar), Dashboard, Companies + Company 360, Products, Opportunities (with Won → Customer rule), Tasks, Sales Records (manual + auto), Activity Log, Archive, Settings.
+- **GTM**: Dashboard, Current Situation, GTM Plan
+- **Revenue**: Companies, Products, Opportunities, Sales, Analytics
+- **Execution**: Tasks, Calendar, Meetings
+- **Intelligence**: Intelligence, Competitors, Goals
+- **System**: Activity, Archive, Settings
 
-**Deferred to V2:** Current Situation, GTM Engine, ICP scoring, Sales Analytics deep charts, Calendar, Meetings & Decisions, Strategic Intelligence (rich text KB), Competitors, Goals & Roadmap.
+Add i18n keys `nav.groups.gtm/revenue/execution/intelligence/system` (EN + AR) for the group labels.
 
-## Design & Localization
+## 2. Dashboard layout (`src/routes/_authenticated/dashboard.tsx`)
 
-- Theme: white + light blue, modern industrial executive. Light/Dark mode.
-- shadcn/ui + Tailwind v4 design tokens in `src/styles.css` (oklch).
-- Default locale: **Arabic RTL**, switchable to English. `dir` toggled on `<html>`. Use `i18next` with `ar` + `en` resource bundles.
-- Fonts: Cairo / IBM Plex Sans Arabic for AR, Inter for EN.
-- Fixed sidebar (collapsible via shadcn Sidebar), topbar with search, notifications, theme toggle, language toggle, user menu.
+New information hierarchy (top → bottom), tighter spacing (`space-y-4`, `gap-3`, smaller paddings):
 
-## Architecture
-
-- TanStack Start + React 19 + TypeScript + Tailwind v4 + shadcn/ui.
-- Lovable Cloud (Supabase) enabled. Auth via Supabase Auth (email + password).
-- Data via `createServerFn` + `requireSupabaseAuth`, TanStack Query for cache; protected pages under `src/routes/_authenticated/`.
-- Role table `user_roles` (`app_role` enum: `owner`, `admin`) + `has_role()` security definer. First signed-up user auto-promoted to `owner`.
-- No hard deletes — every domain table has `archived_at`. Archive page restores.
-- Every mutation writes to `activity_logs`.
-
-## Database Schema (V1)
-
-All public-schema tables get explicit GRANTs + RLS. RLS: authenticated users (owner/admin) can read/write; archive sets `archived_at`.
-
-- `profiles` (id → auth.users, full_name, avatar_url, locale, theme)
-- `user_roles` (user_id, role)
-- `sectors` (id, name_ar, name_en, archived_at)
-- `companies` (id, name, type [`customer`|`target`|`opportunity`], sector_id, website, linkedin, location, contact_person, phone, email, notes, logo_url, status, archived_at)
-- `products` (id, name_ar, name_en, description, default_margin, sector_id, archived_at) — seeded with Coils, Circles, Sheets, Deoxidizer
-- `opportunities` (id, company_id, product_id, expected_tons, expected_revenue, expected_profit, blockers, next_action, owner_id, deadline, pipeline_status [`lead`|`contacted`|`qualified`|`negotiation`|`won`|`lost`], archived_at)
-- `sales_records` (id, company_id, product_id, opportunity_id nullable, period_month, tons, revenue, profit, margin generated, created_by, archived_at)
-- `tasks` (id, title, description, priority, status [`todo`|`in_progress`|`blocked`|`completed`], deadline, assignee_id, company_id, opportunity_id, archived_at)
-- `task_comments` (id, task_id, user_id, body)
-- `activity_logs` (id, user_id, entity_type, entity_id, action [`created`|`edited`|`archived`|`restored`|`status_changed`], meta jsonb, created_at)
-- `notifications` (id, user_id, title, body, read_at, created_at)
-- `app_settings` (singleton: logo_url, default_locale, default_theme)
-
-DB trigger: when `opportunities.pipeline_status` flips to `won`, set `companies.type = 'customer'` and insert a `sales_records` row from the opportunity's expected values (auto path for "Both"). Trigger writes to `activity_logs`.
-
-Seed: 4 default products, a small starter sector list (Construction, Cookware, Industrial, Packaging, Electrical, Other).
-
-## Routes
-
-```
-/auth                                 sign in / sign up
-/_authenticated/                      shell (sidebar + topbar)
-  index                               Dashboard
-  companies / companies.$id           list + Company 360
-  products
-  opportunities                       table + Kanban by pipeline_status
-  tasks                               Kanban / Table toggle
-  sales                               manual entry + list (analytics page later)
-  activity
-  archive
-  settings
+```text
+┌─────────────────────────────────────────────────────────┐
+│ Executive header (title + period chip + last updated)   │
+├─────────────────────────────────────────────────────────┤
+│ KPI strip (6 compact cards, single row on lg)           │
+├──────────────────────────────┬──────────────────────────┤
+│ Monthly Trend chart (2026)   │ Today's Focus            │
+│ (col-span-2)                 │ (tasks due today)        │
+├──────────────────────────────┼──────────────────────────┤
+│ Next Best Actions            │ Upcoming Deadlines       │
+│ (top open opps, ranked)      │ (next 7d tasks + opps)   │
+├──────────────────────────────┴──────────────────────────┤
+│ Recent Activities (activity_logs feed, compact rows)    │
+└─────────────────────────────────────────────────────────┘
 ```
 
-Placeholder routes (empty "coming soon" pages) created for: current-situation, gtm, analytics, calendar, meetings, intelligence, competitors, goals — so nav matches the spec and V2 can fill them in.
+Layout changes:
+- Replace stacked full-width blocks with `lg:grid-cols-3` (chart 2/3 + Today's Focus 1/3) then `lg:grid-cols-2` for NBA + Deadlines.
+- Reduce KPI card padding `p-4` → `p-3`, smaller labels, inline icon.
+- Chart height `h-64` → `h-56`, denser axes.
+- Remove redundant page description; replace with a thin meta row.
 
-## Key UI
+### Widgets
 
-- **Dashboard:** KPI cards (Revenue YTD, Profit YTD, Avg Margin %, Tons YTD, Active Customers, Open Opportunities), Today's Focus (tasks due today), Top Opportunities (by expected_revenue, open), Upcoming Deadlines, Recent Activity, Notifications. Recharts: Monthly Revenue / Profit / Tons (last 12 months from `sales_records`).
-- **Companies:** searchable/filterable table, type badges, archive action.
-- **Company 360:** header w/ logo + type, tabs — Profile, Contacts, Sales History, Opportunities, Tasks, Notes, Timeline (from activity_logs).
-- **Opportunities:** Kanban columns = pipeline stages, drag to change stage; moving to Won fires the trigger.
-- **Tasks:** Kanban (status columns) + table view toggle, comments drawer.
-- **Archive:** unified list across entity types with Restore.
-- **Settings:** profile, theme, language, logo upload (Supabase Storage `branding` bucket), users list (owner can invite/promote — V1 shows list + role).
+- **Today's Focus**: reuse existing `todayTasks` query (already present) — show priority dot, title, due time; cap at 6.
+- **Next Best Actions**: reuse `topOpps` query, present as ranked actionable rows ("Advance {opp} — {stage}") with revenue and stage chip.
+- **Upcoming Deadlines**: new query — `tasks` where `deadline` between today+1 and today+7, plus `opportunities` with `expected_close_date` in same window; unify into one sorted list (no schema changes).
+- **Recent Activities**: new query — `activity_logs` joined with user, last 8 entries; render as compact feed (icon by action, entity, relative time).
 
-## Technical Notes
+## 3. Empty states
 
-- TanStack Query: `queryOptions` + `ensureQueryData` in loaders, `useSuspenseQuery` in components. `errorComponent` + `notFoundComponent` on every loader route.
-- Validation: zod schemas on every server fn `inputValidator`.
-- All currency/tons formatted with locale-aware `Intl.NumberFormat`.
-- Activity log written from server fns (one helper) so client never forges entries.
-- Storage bucket `branding` (public) for company logos + app logo; `avatars` (public) for users.
+Create `src/components/empty-state.tsx` — accepts `icon`, `title`, `description`, optional `action`. Subtle dashed border, muted icon, single short sentence. Use in every widget and inside the chart when `monthly` totals are all zero. Add i18n keys `empty.noData/noTasks/noOpps/noActivity/noDeadlines`.
 
-## Out of Scope (explicit)
+## 4. Aluminium industrial visual identity
 
-- ICP scoring engine, SWOT editor, rich-text KB, Competitor tracker, Goals/Roadmap progress, Calendar (FullCalendar), Meetings → tasks generator, deep Sales Analytics page. These get their own follow-up plan once V1 is approved and shipping.
+Lightweight, subtle, non-intrusive — token-driven, no heavy images.
 
-## Deliverable Order
+- **CSS tokens** (`src/styles.css`): add
+  - `--gradient-aluminium: linear-gradient(135deg, oklch(0.92 0.005 240), oklch(0.85 0.008 240), oklch(0.95 0.004 240))`
+  - `--shadow-industrial: 0 1px 0 color-mix(in oklab, white 60%, transparent) inset, 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent)`
+  - `.bg-coil` utility: a repeating linear-gradient producing thin metallic banding (aluminium coil texture) at ~4% opacity for backgrounds.
+  - `.metal-card`: applies aluminium gradient + industrial shadow + 1px hairline border.
+- **Background**: add a fixed, very low-opacity SVG of stacked coils as decorative `::before` on `<main>` (pointer-events: none, 3–5% opacity, masked at edges) — purely atmospheric.
+- **Header accent**: thin brushed-metal divider under the page header.
+- **KPI cards**: apply `.metal-card` for a subtle aluminium feel; keep dark-mode tokens too.
+- **Icons**: keep current lucide set; tint primary icons with `text-primary` over metallic surface.
 
-1. Enable Lovable Cloud + migrations (schema, RLS, trigger, seed).
-2. Auth (sign in/up, role bootstrap, `_authenticated` gate already managed).
-3. Shell: sidebar, topbar, i18n (AR default + RTL), theme toggle.
-4. Dashboard with real queries.
-5. Companies + Company 360.
-6. Products.
-7. Opportunities (table + Kanban + Won rule).
-8. Tasks (Kanban + table + comments).
-9. Sales records (manual entry, list).
-10. Activity Log + Archive + Settings.
-11. Placeholder routes for V2 modules.
+All visuals stay token-based — no raster images, no brand color override.
+
+## 5. i18n additions (`src/lib/i18n.ts`)
+
+Add keys for: nav groups, new widget titles (`dashboard.nextBestActions`, `dashboard.upcomingDeadlines`, `dashboard.recentActivities`, `dashboard.lastUpdated`, `dashboard.period`), empty-state strings. Provide AR translations.
+
+## Files touched
+
+- `src/components/app-shell.tsx` — regroup nav
+- `src/components/empty-state.tsx` — new
+- `src/routes/_authenticated/dashboard.tsx` — full layout refactor + 2 new queries
+- `src/styles.css` — aluminium tokens + utilities
+- `src/lib/i18n.ts` — new keys (EN + AR)
+
+## Out of scope
+
+- No schema changes, no new tables, no new server functions.
+- No changes to other routes' content.
+- No new business features — purely UX, layout, and visual identity.
