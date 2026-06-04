@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
-import { fmtCurrency, fmtNumber, fmtPercent, fmtDate } from "@/lib/format";
+import { fmtCurrency, fmtNumber, fmtPercent, fmtDate, localDateISO, addDaysISO } from "@/lib/format";
 import {
   TrendingUp, DollarSign, Percent, Package, Users, Target,
   CalendarClock, ListChecks, Sparkles, Activity as ActivityIcon, Factory,
