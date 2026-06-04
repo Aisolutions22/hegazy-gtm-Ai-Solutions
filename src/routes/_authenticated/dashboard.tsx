@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/empty-state";
-import { fmtCurrency, fmtNumber, fmtPercent, fmtDate } from "@/lib/format";
+import { fmtCurrency, fmtNumber, fmtPercent, fmtDate, localDateISO, addDaysISO } from "@/lib/format";
 import {
   TrendingUp, DollarSign, Percent, Package, Users, Target,
   CalendarClock, ListChecks, Sparkles, Activity as ActivityIcon, Factory,
@@ -70,20 +70,29 @@ function Dashboard() {
   const { data: todayTasks } = useQuery({
     queryKey: ["dashboard-today"],
     queryFn: async () => {
-      const today = new Date().toISOString().slice(0, 10);
-      const { data } = await supabase.from("tasks").select("id,title,priority,deadline").lte("deadline", today).neq("status", "completed").is("archived_at", null).order("deadline").limit(6);
-      return data ?? [];
+      // Use LOCAL calendar date — avoid UTC drift from toISOString()
+      const today = localDateISO();
+      const { data } = await supabase
+        .from("tasks")
+        .select("id,title,priority,deadline,status")
+        .lte("deadline", today)
+        .neq("status", "completed")
+        .is("archived_at", null)
+        .order("deadline")
+        .limit(20);
+      // Defensive client-side filter: any non-completed task with deadline <= today
+      const rows = (data ?? []).filter((t) => t.status !== "completed" && t.deadline && String(t.deadline) <= today);
+      return rows.slice(0, 6);
     },
   });
 
   const { data: upcoming } = useQuery({
     queryKey: ["dashboard-upcoming"],
     queryFn: async () => {
-      const today = new Date();
-      const start = new Date(today); start.setDate(start.getDate() + 1);
-      const end = new Date(today); end.setDate(end.getDate() + 7);
-      const startStr = start.toISOString().slice(0, 10);
-      const endStr = end.toISOString().slice(0, 10);
+      // Upcoming = strictly AFTER local today, within next 7 days.
+      // Using local-date math guarantees no overlap or gap with Today's Focus.
+      const startStr = addDaysISO(1);
+      const endStr = addDaysISO(7);
       const [tasks, opps] = await Promise.all([
         supabase.from("tasks").select("id,title,deadline,priority").gte("deadline", startStr).lte("deadline", endStr).neq("status", "completed").is("archived_at", null),
         supabase.from("opportunities").select("id,title,deadline,company:companies(name)").gte("deadline", startStr).lte("deadline", endStr).not("pipeline_status", "in", "(won,lost)").is("archived_at", null),

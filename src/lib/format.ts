@@ -38,3 +38,17 @@ export function fmtMonth(d: string | Date | null | undefined, locale = "en") {
     month: "short",
   }).format(date);
 }
+
+/** YYYY-MM-DD for a local-timezone date (no UTC drift). */
+export function localDateISO(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Add N calendar days to a local date and return YYYY-MM-DD. */
+export function addDaysISO(days: number, base: Date = new Date()): string {
+  const d = new Date(base.getFullYear(), base.getMonth(), base.getDate() + days);
+  return localDateISO(d);
+}
