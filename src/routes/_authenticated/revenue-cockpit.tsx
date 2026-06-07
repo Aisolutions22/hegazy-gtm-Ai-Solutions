@@ -9,11 +9,26 @@ import { useRevenueCockpit } from "@/hooks/use-revenue-cockpit";
 import {
   Gauge, TrendingUp, TrendingDown, AlertTriangle, Target, Sparkles,
   Trophy, Factory, ArrowUpRight, Activity, ShieldAlert, Crown, Lightbulb,
+  ListChecks, Compass, Flame, AlertCircle, ClipboardList, Layers,
 } from "lucide-react";
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend,
   BarChart, Cell,
 } from "recharts";
+import { cn } from "@/lib/utils";
+
+const RISK_LEVEL: Record<string, string> = {
+  low: "bg-success/10 text-success border-success/30",
+  medium: "bg-warning/10 text-warning border-warning/30",
+  high: "bg-orange-500/10 text-orange-500 border-orange-500/30",
+  extreme: "bg-destructive/10 text-destructive border-destructive/30",
+};
+const FOCUS_KIND: Record<string, { icon: typeof Flame; cls: string }> = {
+  overdue: { icon: Flame, cls: "text-destructive" },
+  deadline: { icon: AlertCircle, cls: "text-warning" },
+  "high-value": { icon: Crown, cls: "text-primary" },
+  "missing-data": { icon: ClipboardList, cls: "text-muted-foreground" },
+};
 
 export const Route = createFileRoute("/_authenticated/revenue-cockpit")({
   component: RevenueCockpit,
@@ -107,6 +122,170 @@ function RevenueCockpit() {
           accent={data.top1Share > 35 ? "text-destructive" : "text-muted-foreground"}
         />
       </div>
+
+      {/* Revenue Priority Board + This Week Focus */}
+      <div className="grid lg:grid-cols-3 gap-3">
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-primary" />
+              {t("cockpit.priority.title")}
+              <span className="text-[10px] font-normal text-muted-foreground ms-2">{t("cockpit.priority.subtitle")}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {data.priorityBoard.length === 0 ? (
+              <EmptyState icon={Trophy} title={t("cockpit.priority.empty")} compact />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b">
+                      <th className="text-start font-medium py-2">#</th>
+                      <th className="text-start font-medium py-2">{t("cockpit.ranking.sector").replace("القطاع","الحساب").replace("Sector","Account")}</th>
+                      <th className="text-end font-medium py-2">ICP</th>
+                      <th className="text-end font-medium py-2">{t("cockpit.kpi.weightedPipeline")}</th>
+                      <th className="text-end font-medium py-2">{t("cockpit.priority.composite")}</th>
+                      <th className="text-start font-medium py-2 ps-3">{t("cockpit.priority.action")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.priorityBoard.map((r, i) => (
+                      <tr key={r.id} className="border-b border-border/50 hover:bg-muted/40">
+                        <td className="py-2 text-muted-foreground tabular-nums">{i + 1}</td>
+                        <td className="py-2">
+                          <Link to="/companies/$id" params={{ id: r.id }} className="flex items-center gap-2 hover:underline">
+                            <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0", TIER_COLORS[r.icp_tier] ?? TIER_COLORS.low)}>{r.icp_tier}</Badge>
+                            <span className="font-medium truncate max-w-[180px]">{r.name}</span>
+                          </Link>
+                        </td>
+                        <td className="py-2 text-end tabular-nums">{r.icp_score}</td>
+                        <td className="py-2 text-end tabular-nums">{fmtCurrency(r.pipelineValue, locale)}</td>
+                        <td className="py-2 text-end tabular-nums font-semibold">{r.composite}</td>
+                        <td className="py-2 ps-3 text-muted-foreground">{t(`cockpit.priority.actions.${r.action}`)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <ListChecks className="h-4 w-4 text-primary" />
+              {t("cockpit.week.title")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-1.5">
+            {data.weekFocus.length === 0 ? (
+              <EmptyState icon={ListChecks} title={t("cockpit.week.empty")} compact />
+            ) : (
+              data.weekFocus.map((f) => {
+                const meta = FOCUS_KIND[f.kind];
+                const Icon = meta.icon;
+                const inner = (
+                  <div className="flex items-start gap-2 py-1.5 border-b border-border/50 last:border-0 hover:bg-muted/40 -mx-2 px-2 rounded">
+                    <Icon className={cn("h-3.5 w-3.5 mt-0.5 shrink-0", meta.cls)} />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-medium truncate">{f.label}</div>
+                      {f.sublabel && <div className="text-[10px] text-muted-foreground truncate">{f.sublabel}</div>}
+                    </div>
+                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0">
+                      {t(`cockpit.week.kinds.${f.kind}`)}
+                    </Badge>
+                  </div>
+                );
+                return f.companyId
+                  ? <Link key={f.id} to="/companies/$id" params={{ id: f.companyId }} className="block">{inner}</Link>
+                  : <div key={f.id}>{inner}</div>;
+              })
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Risk Board */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-destructive" />
+            {t("cockpit.risks.title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0 grid md:grid-cols-3 gap-3">
+          {data.risks.map((r) => (
+            <div key={r.id} className={cn("rounded-md border p-3 space-y-2", RISK_LEVEL[r.level])}>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold">{t(`cockpit.risks.${r.titleKey}`)}</span>
+                <Badge variant="outline" className={cn("text-[10px] uppercase tracking-wider", RISK_LEVEL[r.level])}>
+                  {t(`cockpit.risks.levels.${r.level}`)}
+                </Badge>
+              </div>
+              <div className="text-2xl font-bold tabular-nums">{fmtPercent(r.metric, locale)}</div>
+              <p className="text-[11px] opacity-90 leading-relaxed">
+                {String(t(`cockpit.risks.${r.detailKey}`, r.detailValues as never))}
+              </p>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Market Coverage */}
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Compass className="h-4 w-4 text-primary" />
+            {t("cockpit.coverage.title")}
+            <span className="text-[10px] font-normal text-muted-foreground ms-2">{t("cockpit.coverage.subtitle")}</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          {data.marketCoverage.length === 0 ? (
+            <EmptyState icon={Layers} title={t("cockpit.coverage.empty")} compact />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b">
+                    <th className="text-start font-medium py-2">{t("cockpit.ranking.sector")}</th>
+                    <th className="text-end font-medium py-2">{t("cockpit.coverage.targets")}</th>
+                    <th className="text-end font-medium py-2">{t("cockpit.coverage.active")}</th>
+                    <th className="text-end font-medium py-2">{t("cockpit.coverage.opps")}</th>
+                    <th className="text-end font-medium py-2">{t("cockpit.ranking.revenue")}</th>
+                    <th className="text-start font-medium py-2 ps-4 w-[28%]">{t("cockpit.coverage.coverage")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.marketCoverage.map((s) => (
+                    <tr key={s.id} className={cn("border-b border-border/50 hover:bg-muted/40", s.untapped && "bg-warning/5")}>
+                      <td className="py-2 font-medium">
+                        <div className="flex items-center gap-2">
+                          <span className="truncate">{sectorName(s)}</span>
+                          {s.untapped && <Badge variant="outline" className="text-[9px] px-1.5 py-0 text-warning border-warning/30">{t("cockpit.coverage.untapped")}</Badge>}
+                        </div>
+                      </td>
+                      <td className="py-2 text-end tabular-nums">{s.targets}</td>
+                      <td className="py-2 text-end tabular-nums">{s.active}</td>
+                      <td className="py-2 text-end tabular-nums">{s.opportunities}</td>
+                      <td className="py-2 text-end tabular-nums">{fmtCurrency(s.revenue, locale)}</td>
+                      <td className="py-2 ps-4">
+                        <div className="flex items-center gap-2">
+                          <Progress value={s.coverage} className="h-1.5 flex-1" />
+                          <span className="text-[10px] tabular-nums text-muted-foreground w-10 text-end">{Math.round(s.coverage)}%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
 
       {/* Forecast chart */}
       <Card>

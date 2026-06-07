@@ -21,6 +21,14 @@ function addMonths(base: Date, n: number) {
 
 export type CockpitData = ReturnType<typeof buildCockpit>;
 
+type RiskLevel = "low" | "medium" | "high" | "extreme";
+function riskLevel(pct: number): RiskLevel {
+  if (pct >= 50) return "extreme";
+  if (pct >= 35) return "high";
+  if (pct >= 20) return "medium";
+  return "low";
+}
+
 function buildCockpit(args: {
   sales: { period_month: string; revenue: number; profit: number; tons: number; company_id: string }[];
   opps: {
@@ -28,7 +36,11 @@ function buildCockpit(args: {
     pipeline_status: string; deadline: string | null; updated_at: string; company_id: string;
     company: { name: string; sector_id: string | null; type: string } | null;
   }[];
-  companies: { id: string; name: string; type: string; sector_id: string | null; icp_score: number | null; icp_tier: string | null }[];
+  companies: {
+    id: string; name: string; type: string; sector_id: string | null;
+    icp_score: number | null; icp_tier: string | null; icp_strategic?: number | null;
+    contact_person?: string | null; phone?: string | null; email?: string | null;
+  }[];
   sectors: { id: string; name_en: string; name_ar: string }[];
 }) {
   const { sales, opps, companies, sectors } = args;
@@ -224,6 +236,153 @@ function buildCockpit(args: {
     .slice(0, 3)
     .reduce((s, r) => s + r.forecastProfit, 0);
 
+  // ---- Revenue Priority Board
+  const profitByCompany = new Map<string, number>();
+  for (const o of opps) {
+    if (o.pipeline_status === "won" || o.pipeline_status === "lost") continue;
+    const w = STAGE_WEIGHTS[o.pipeline_status] ?? 0;
+    profitByCompany.set(o.company_id, (profitByCompany.get(o.company_id) ?? 0) + Number(o.expected_profit || 0) * w);
+  }
+  const oppValueMax = Math.max(1, ...Array.from(openOppByCompany.values()).map((v) => v.value));
+  const profitMax = Math.max(1, ...Array.from(profitByCompany.values()));
+
+  function recommendedAction(a: { openOpps: number; pipelineValue: number; icpTier: string | null; isCustomer: boolean; expProfit: number }): string {
+    if (a.openOpps === 0 && a.isCustomer) return "reEngageCustomer";
+    if (a.openOpps === 0 && a.icpTier === "A") return "openOpportunity";
+    if (a.openOpps === 0) return "qualifyAccount";
+    if (a.icpTier === "A" && a.pipelineValue > 0) return "accelerateDeal";
+    if (a.expProfit > 0) return "advanceStage";
+    return "scheduleMeeting";
+  }
+
+  const priorityBoard = companies
+    .map((c) => {
+      const opp = openOppByCompany.get(c.id) ?? { count: 0, value: 0 };
+      const expProfit = profitByCompany.get(c.id) ?? 0;
+      const icp = Number(c.icp_score ?? 0);
+      const oppScore = (opp.value / oppValueMax) * 100;
+      const profitScore = (expProfit / profitMax) * 100;
+      const strategic = Number(c.icp_strategic ?? 0) * 10;
+      const composite = icp * 0.35 + oppScore * 0.25 + profitScore * 0.25 + strategic * 0.15;
+      return {
+        id: c.id, name: c.name, type: c.type, icp_score: icp, icp_tier: c.icp_tier ?? "low",
+        openOpps: opp.count, pipelineValue: opp.value, expectedProfit: expProfit,
+        strategic, composite: Math.round(composite),
+        action: recommendedAction({
+          openOpps: opp.count, pipelineValue: opp.value, icpTier: c.icp_tier,
+          isCustomer: c.type === "customer", expProfit,
+        }),
+      };
+    })
+    .filter((r) => r.composite > 0 || r.icp_score > 0)
+    .sort((a, b) => b.composite - a.composite)
+    .slice(0, 8);
+
+  // ---- This Week Focus
+  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const weekEndISO = `${weekEnd.getFullYear()}-${pad(weekEnd.getMonth() + 1)}-${pad(weekEnd.getDate())}`;
+  const todayISO = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+
+  type FocusItem = { id: string; kind: "overdue" | "deadline" | "high-value" | "missing-data"; priority: number; label: string; sublabel?: string; companyId?: string };
+  const weekFocus: FocusItem[] = [];
+  for (const o of opps) {
+    if (o.pipeline_status === "won" || o.pipeline_status === "lost" || !o.deadline) continue;
+    if (o.deadline < todayISO) {
+      weekFocus.push({
+        id: `ov-${o.id}`, kind: "overdue", priority: 100 + Number(o.expected_revenue || 0) / 1e6,
+        label: o.title || o.company?.name || "Opportunity", sublabel: o.company?.name ?? undefined, companyId: o.company_id,
+      });
+    } else if (o.deadline <= weekEndISO) {
+      weekFocus.push({
+        id: `dl-${o.id}`, kind: "deadline", priority: 60 + Number(o.expected_revenue || 0) / 1e6,
+        label: o.title || o.company?.name || "Opportunity",
+        sublabel: `${o.company?.name ?? ""} • ${o.deadline}`, companyId: o.company_id,
+      });
+    }
+  }
+  for (const tgt of priorityBoard.slice(0, 5)) {
+    if (tgt.openOpps > 0) continue;
+    weekFocus.push({
+      id: `hv-${tgt.id}`, kind: "high-value", priority: 50 + tgt.composite / 10,
+      label: tgt.name, sublabel: `ICP ${tgt.icp_score} • ${tgt.icp_tier}`, companyId: tgt.id,
+    });
+  }
+  for (const c of companies) {
+    const missing: string[] = [];
+    if (!c.sector_id) missing.push("sector");
+    if (!c.contact_person) missing.push("contact");
+    if (!c.phone && !c.email) missing.push("channel");
+    if (missing.length >= 2 && (c.icp_tier === "A" || c.icp_tier === "B")) {
+      weekFocus.push({
+        id: `md-${c.id}`, kind: "missing-data", priority: 40,
+        label: c.name, sublabel: missing.join(", "), companyId: c.id,
+      });
+    }
+  }
+  weekFocus.sort((a, b) => b.priority - a.priority);
+
+  // ---- Market Coverage
+  const coverageMap = new Map<string, { id: string; name_en: string; name_ar: string; targets: number; active: number; opportunities: number; revenue: number }>();
+  const coverageEntry = (id: string) => {
+    const ex = coverageMap.get(id);
+    if (ex) return ex;
+    const sec = id === "__none__" ? null : sectorById.get(id);
+    const e = { id, name_en: sec?.name_en ?? "Uncategorized", name_ar: sec?.name_ar ?? "غير مصنف", targets: 0, active: 0, opportunities: 0, revenue: 0 };
+    coverageMap.set(id, e);
+    return e;
+  };
+  for (const s of sectors) coverageEntry(s.id);
+  for (const c of companies) {
+    const e = coverageEntry(c.sector_id ?? "__none__");
+    if (c.type === "target") e.targets += 1;
+    if (c.type === "customer") e.active += 1;
+    e.opportunities += openOppByCompany.get(c.id)?.count ?? 0;
+  }
+  for (const s of sales) {
+    if (String(s.period_month) < yearStart) continue;
+    const c = companyById.get(s.company_id);
+    coverageEntry(c?.sector_id ?? "__none__").revenue += Number(s.revenue || 0);
+  }
+  const marketCoverage = Array.from(coverageMap.values())
+    .map((e) => {
+      const total = e.targets + e.active;
+      const coverage = total > 0 ? (e.active / total) * 100 : 0;
+      const untapped = e.targets > 0 && e.active === 0;
+      return { ...e, total, coverage, untapped };
+    })
+    .filter((e) => e.total > 0 || e.revenue > 0)
+    .sort((a, b) => b.revenue - a.revenue || b.total - a.total);
+
+  // ---- Upgraded Risk Analysis
+  const sortedOpenOpps = opps
+    .filter((o) => o.pipeline_status !== "won" && o.pipeline_status !== "lost")
+    .map((o) => ({
+      title: o.title, company: o.company?.name ?? "—",
+      weighted: Number(o.expected_revenue || 0) * (STAGE_WEIGHTS[o.pipeline_status] ?? 0),
+    }))
+    .sort((a, b) => b.weighted - a.weighted);
+  const topOppShare = weightedPipeline > 0 ? ((sortedOpenOpps[0]?.weighted ?? 0) / weightedPipeline) * 100 : 0;
+  const topSectorShare = sectorRanking[0]?.share ?? 0;
+
+  const risks = [
+    {
+      id: "customer", level: riskLevel(top1Share), titleKey: "customerConcentration",
+      metric: top1Share, detailKey: "topCustomerDetail",
+      detailValues: { name: sortedCustomers[0]?.name ?? "—", share: Math.round(top1Share) },
+    },
+    {
+      id: "sector", level: riskLevel(topSectorShare), titleKey: "sectorConcentration",
+      metric: topSectorShare, detailKey: "topSectorDetail",
+      detailValues: { sector: sectorRanking[0]?.name_en ?? "—", share: Math.round(topSectorShare) },
+    },
+    {
+      id: "opportunity", level: riskLevel(topOppShare), titleKey: "opportunityDependency",
+      metric: topOppShare, detailKey: "topOppDetail",
+      detailValues: { name: sortedOpenOpps[0]?.title ?? sortedOpenOpps[0]?.company ?? "—", share: Math.round(topOppShare) },
+    },
+  ];
+
   return {
     forecast, pipeline, totalPipeline, weightedPipeline,
     revenueBySector, sectorRanking, totalYtdRevenue,
@@ -232,6 +391,7 @@ function buildCockpit(args: {
     goal: { target: goal90, actual: curr90Rev, progress: goalProgress, delta: goalDelta, prev: prev90Rev },
     recs,
     next90RevForecast, next90ProfitForecast,
+    priorityBoard, weekFocus, marketCoverage, risks,
   };
 }
 
@@ -252,7 +412,7 @@ export function useRevenueCockpit() {
           .select("id,title,expected_revenue,expected_profit,pipeline_status,deadline,updated_at,company_id,company:companies(name,sector_id,type)")
           .is("archived_at", null),
         supabase.from("companies")
-          .select("id,name,type,sector_id,icp_score,icp_tier")
+          .select("id,name,type,sector_id,icp_score,icp_tier,icp_strategic,contact_person,phone,email")
           .is("archived_at", null),
         supabase.from("sectors").select("id,name_en,name_ar").is("archived_at", null),
       ]);
