@@ -21,6 +21,14 @@ function addMonths(base: Date, n: number) {
 
 export type CockpitData = ReturnType<typeof buildCockpit>;
 
+type RiskLevel = "low" | "medium" | "high" | "extreme";
+function riskLevel(pct: number): RiskLevel {
+  if (pct >= 50) return "extreme";
+  if (pct >= 35) return "high";
+  if (pct >= 20) return "medium";
+  return "low";
+}
+
 function buildCockpit(args: {
   sales: { period_month: string; revenue: number; profit: number; tons: number; company_id: string }[];
   opps: {
