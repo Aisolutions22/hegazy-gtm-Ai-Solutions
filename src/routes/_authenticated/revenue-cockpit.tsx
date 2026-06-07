@@ -413,7 +413,7 @@ function RevenueCockpit() {
               return (
                 <div key={r.id} className={`flex items-start gap-3 p-3 rounded border-l-4 ${meta.bg}`}>
                   <Icon className="h-4 w-4 mt-0.5 shrink-0" />
-                  <p className="text-xs leading-relaxed">{t(`cockpit.recs.${r.titleKey}`, r.values as never)}</p>
+                  <p className="text-xs leading-relaxed">{String(t(`cockpit.recs.${r.titleKey}`, r.values as never))}</p>
                 </div>
               );
             })

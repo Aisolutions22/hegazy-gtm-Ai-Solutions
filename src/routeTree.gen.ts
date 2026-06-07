@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
+import { Route as AuthenticatedRevenueCockpitRouteImport } from './routes/_authenticated/revenue-cockpit'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
 import { Route as AuthenticatedOpportunitiesRouteImport } from './routes/_authenticated/opportunities'
 import { Route as AuthenticatedMeetingsRouteImport } from './routes/_authenticated/meetings'
@@ -60,6 +61,12 @@ const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
   path: '/sales',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRevenueCockpitRoute =
+  AuthenticatedRevenueCockpitRouteImport.update({
+    id: '/revenue-cockpit',
+    path: '/revenue-cockpit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProductsRoute = AuthenticatedProductsRouteImport.update({
   id: '/products',
   path: '/products',
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/meetings': typeof AuthenticatedMeetingsRoute
   '/opportunities': typeof AuthenticatedOpportunitiesRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/revenue-cockpit': typeof AuthenticatedRevenueCockpitRoute
   '/sales': typeof AuthenticatedSalesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -180,6 +188,7 @@ export interface FileRoutesByTo {
   '/meetings': typeof AuthenticatedMeetingsRoute
   '/opportunities': typeof AuthenticatedOpportunitiesRoute
   '/products': typeof AuthenticatedProductsRoute
+  '/revenue-cockpit': typeof AuthenticatedRevenueCockpitRoute
   '/sales': typeof AuthenticatedSalesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -204,6 +213,7 @@ export interface FileRoutesById {
   '/_authenticated/meetings': typeof AuthenticatedMeetingsRoute
   '/_authenticated/opportunities': typeof AuthenticatedOpportunitiesRoute
   '/_authenticated/products': typeof AuthenticatedProductsRoute
+  '/_authenticated/revenue-cockpit': typeof AuthenticatedRevenueCockpitRoute
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/opportunities'
     | '/products'
+    | '/revenue-cockpit'
     | '/sales'
     | '/settings'
     | '/tasks'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/meetings'
     | '/opportunities'
     | '/products'
+    | '/revenue-cockpit'
     | '/sales'
     | '/settings'
     | '/tasks'
@@ -273,6 +285,7 @@ export interface FileRouteTypes {
     | '/_authenticated/meetings'
     | '/_authenticated/opportunities'
     | '/_authenticated/products'
+    | '/_authenticated/revenue-cockpit'
     | '/_authenticated/sales'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
@@ -327,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/sales'
       fullPath: '/sales'
       preLoaderRoute: typeof AuthenticatedSalesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/revenue-cockpit': {
+      id: '/_authenticated/revenue-cockpit'
+      path: '/revenue-cockpit'
+      fullPath: '/revenue-cockpit'
+      preLoaderRoute: typeof AuthenticatedRevenueCockpitRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/products': {
@@ -466,6 +486,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMeetingsRoute: typeof AuthenticatedMeetingsRoute
   AuthenticatedOpportunitiesRoute: typeof AuthenticatedOpportunitiesRoute
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
+  AuthenticatedRevenueCockpitRoute: typeof AuthenticatedRevenueCockpitRoute
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -486,6 +507,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMeetingsRoute: AuthenticatedMeetingsRoute,
   AuthenticatedOpportunitiesRoute: AuthenticatedOpportunitiesRoute,
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
+  AuthenticatedRevenueCockpitRoute: AuthenticatedRevenueCockpitRoute,
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
