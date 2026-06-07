@@ -48,6 +48,7 @@ export type Database = {
         Row: {
           default_locale: string
           default_theme: string
+          icp_weights: Json
           id: number
           logo_url: string | null
           updated_at: string
@@ -55,6 +56,7 @@ export type Database = {
         Insert: {
           default_locale?: string
           default_theme?: string
+          icp_weights?: Json
           id?: number
           logo_url?: string | null
           updated_at?: string
@@ -62,6 +64,7 @@ export type Database = {
         Update: {
           default_locale?: string
           default_theme?: string
+          icp_weights?: Json
           id?: number
           logo_url?: string | null
           updated_at?: string
@@ -75,6 +78,14 @@ export type Database = {
           created_at: string
           created_by: string | null
           email: string | null
+          icp_accessibility: number
+          icp_consumption: number
+          icp_frequency: number
+          icp_profitability: number
+          icp_score: number | null
+          icp_sector_fit: number
+          icp_strategic: number
+          icp_tier: string | null
           id: string
           linkedin: string | null
           location: string | null
@@ -94,6 +105,14 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
+          icp_accessibility?: number
+          icp_consumption?: number
+          icp_frequency?: number
+          icp_profitability?: number
+          icp_score?: number | null
+          icp_sector_fit?: number
+          icp_strategic?: number
+          icp_tier?: string | null
           id?: string
           linkedin?: string | null
           location?: string | null
@@ -113,6 +132,14 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
+          icp_accessibility?: number
+          icp_consumption?: number
+          icp_frequency?: number
+          icp_profitability?: number
+          icp_score?: number | null
+          icp_sector_fit?: number
+          icp_strategic?: number
+          icp_tier?: string | null
           id?: string
           linkedin?: string | null
           location?: string | null
@@ -132,6 +159,104 @@ export type Database = {
             columns: ["sector_id"]
             isOneToOne: false
             referencedRelation: "sectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_notes: {
+        Row: {
+          archived_at: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          note: string
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note: string
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_notes_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meetings: {
+        Row: {
+          archived_at: string | null
+          attendees: string[]
+          company_id: string | null
+          created_at: string
+          created_by: string | null
+          decisions: string | null
+          id: string
+          meeting_date: string
+          notes: string | null
+          opportunity_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          attendees?: string[]
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          decisions?: string | null
+          id?: string
+          meeting_date?: string
+          notes?: string | null
+          opportunity_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          attendees?: string[]
+          company_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          decisions?: string | null
+          id?: string
+          meeting_date?: string
+          notes?: string | null
+          opportunity_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meetings_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
             referencedColumns: ["id"]
           },
         ]
