@@ -251,7 +251,7 @@ const resources = {
         signOut: "Sign Out", invalidCreds: "Invalid credentials", accountCreated: "Account created successfully",
       },
       nav: {
-        dashboard: "Dashboard", currentSituation: "Current Situation", gtm: "GTM Engine",
+        dashboard: "Dashboard", revenueCockpit: "Revenue Cockpit", currentSituation: "Current Situation", gtm: "GTM Engine",
         companies: "Companies", products: "Products", opportunities: "Opportunities",
         analytics: "Sales Analytics", tasks: "Tasks", calendar: "Calendar",
         meetings: "Meetings & Decisions", intelligence: "Strategic Intelligence",
