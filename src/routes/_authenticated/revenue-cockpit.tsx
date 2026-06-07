@@ -9,11 +9,26 @@ import { useRevenueCockpit } from "@/hooks/use-revenue-cockpit";
 import {
   Gauge, TrendingUp, TrendingDown, AlertTriangle, Target, Sparkles,
   Trophy, Factory, ArrowUpRight, Activity, ShieldAlert, Crown, Lightbulb,
+  ListChecks, Compass, Flame, AlertCircle, ClipboardList, Layers,
 } from "lucide-react";
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend,
   BarChart, Cell,
 } from "recharts";
+import { cn } from "@/lib/utils";
+
+const RISK_LEVEL: Record<string, string> = {
+  low: "bg-success/10 text-success border-success/30",
+  medium: "bg-warning/10 text-warning border-warning/30",
+  high: "bg-orange-500/10 text-orange-500 border-orange-500/30",
+  extreme: "bg-destructive/10 text-destructive border-destructive/30",
+};
+const FOCUS_KIND: Record<string, { icon: typeof Flame; cls: string }> = {
+  overdue: { icon: Flame, cls: "text-destructive" },
+  deadline: { icon: AlertCircle, cls: "text-warning" },
+  "high-value": { icon: Crown, cls: "text-primary" },
+  "missing-data": { icon: ClipboardList, cls: "text-muted-foreground" },
+};
 
 export const Route = createFileRoute("/_authenticated/revenue-cockpit")({
   component: RevenueCockpit,
