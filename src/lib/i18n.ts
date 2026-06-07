@@ -24,6 +24,7 @@ const resources = {
       },
       nav: {
         dashboard: "لوحة القيادة",
+        revenueCockpit: "قمرة قيادة الإيرادات",
         currentSituation: "الوضع الحالي",
         gtm: "محرك GTM",
         companies: "الشركات",
