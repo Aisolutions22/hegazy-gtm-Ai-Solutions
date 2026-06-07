@@ -36,7 +36,11 @@ function buildCockpit(args: {
     pipeline_status: string; deadline: string | null; updated_at: string; company_id: string;
     company: { name: string; sector_id: string | null; type: string } | null;
   }[];
-  companies: { id: string; name: string; type: string; sector_id: string | null; icp_score: number | null; icp_tier: string | null }[];
+  companies: {
+    id: string; name: string; type: string; sector_id: string | null;
+    icp_score: number | null; icp_tier: string | null; icp_strategic?: number | null;
+    contact_person?: string | null; phone?: string | null; email?: string | null;
+  }[];
   sectors: { id: string; name_en: string; name_ar: string }[];
 }) {
   const { sales, opps, companies, sectors } = args;
