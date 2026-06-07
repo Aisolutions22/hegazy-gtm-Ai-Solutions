@@ -412,7 +412,7 @@ export function useRevenueCockpit() {
           .select("id,title,expected_revenue,expected_profit,pipeline_status,deadline,updated_at,company_id,company:companies(name,sector_id,type)")
           .is("archived_at", null),
         supabase.from("companies")
-          .select("id,name,type,sector_id,icp_score,icp_tier")
+          .select("id,name,type,sector_id,icp_score,icp_tier,icp_strategic,contact_person,phone,email")
           .is("archived_at", null),
         supabase.from("sectors").select("id,name_en,name_ar").is("archived_at", null),
       ]);
