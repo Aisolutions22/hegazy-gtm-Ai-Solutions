@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { fmtCurrency, fmtNumber, fmtPercent } from "@/lib/format";
 import { useCompanyKpis } from "@/hooks/use-company";
-import { Banknote, TrendingUp, Weight, Percent, Briefcase, ListTodo, Skeleton as _S } from "lucide-react";
+import { Banknote, TrendingUp, Weight, Percent, Briefcase, ListTodo } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function KpiStrip({ companyId }: { companyId: string }) {
