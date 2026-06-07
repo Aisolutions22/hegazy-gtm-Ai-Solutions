@@ -28,6 +28,7 @@ const navGroups = (t: (k: string) => string) => [
     label: t("navGroups.gtm"),
     items: [
       { to: "/dashboard", icon: LayoutDashboard, label: t("nav.dashboard") },
+      { to: "/revenue-cockpit", icon: Gauge, label: t("nav.revenueCockpit") },
       { to: "/current-situation", icon: Compass, label: t("nav.currentSituation") },
       { to: "/gtm", icon: Sparkles, label: t("nav.gtm") },
     ],
