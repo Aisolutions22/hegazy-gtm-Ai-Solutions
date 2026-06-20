@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /$
+Allow: /auth
+Disallow: /dashboard
+Disallow: /companies
+Disallow: /opportunities
+Disallow: /meetings
+Disallow: /tasks
+Disallow: /calendar
+Disallow: /activity
+Disallow: /archive
+Disallow: /analytics
+Disallow: /settings
+Disallow: /goals
+Disallow: /gtm
+Disallow: /intelligence
+Disallow: /products
+Disallow: /sales
+Disallow: /competitors
+Disallow: /current-situation
+Disallow: /revenue-cockpit
+
+Sitemap: https://hegazy-gtm.lovable.app/sitemap.xml

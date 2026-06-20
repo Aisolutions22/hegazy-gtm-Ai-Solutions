@@ -13,7 +13,17 @@ import { setLocale } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
-  head: () => ({ meta: [{ title: "Sign in — Hegazy GTM OS" }] }),
+  head: () => ({
+    meta: [
+      { title: "Sign in — Hegazy GTM OS 2026" },
+      { name: "description", content: "Sign in to Hegazy GTM OS — the executive Growth & Revenue Operating System for Hegazy Aluminium Group team members." },
+      { property: "og:title", content: "Sign in — Hegazy GTM OS 2026" },
+      { property: "og:description", content: "Authorized access for Hegazy Aluminium Group team members." },
+      { property: "og:url", content: "https://hegazy-gtm.lovable.app/auth" },
+      { name: "robots", content: "noindex,follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://hegazy-gtm.lovable.app/auth" }],
+  }),
   component: AuthPage,
 });
 
@@ -69,7 +79,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/40 to-background p-4">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary/40 to-background p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center space-y-2">
           <div className="mx-auto h-12 w-12 rounded-xl gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xl">H</div>
@@ -106,6 +116,6 @@ function AuthPage() {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }
