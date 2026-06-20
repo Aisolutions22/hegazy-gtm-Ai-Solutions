@@ -13,7 +13,6 @@ import { Plus, Archive as ArchiveIcon, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { CompanyForm, type CompanyFormData } from "@/components/company/company-form";
 import { useCompaniesList, useSectors, useArchiveCompany } from "@/hooks/use-company";
-import { useCompaniesList, useSectors, useArchiveCompany } from "@/hooks/use-company";
 
 export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
