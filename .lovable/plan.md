@@ -1,60 +1,62 @@
-# Fix Company 360 routing + add Edit to Companies & Products
+# Investigation: "All application data appears missing"
 
-## 1. Un-nest the Company 360 route
+No changes were made. This is a read-only report from the live database.
 
-**Problem:** `src/routes/_authenticated/companies.$id.tsx` is currently a child of `companies.tsx` (the list page), which has no `<Outlet />`. Result: navigating to `/companies/:id` silently mounts nothing, list stays visible.
+## TL;DR
 
-**Fix:** Rename the file using TanStack Router's trailing-underscore escape:
+The data is **physically intact** in the correct database. Recent migrations only changed RLS policies and one SECURITY DEFINER function — none dropped, truncated, or recreated tables. The most likely cause is that **the account you're signed in with no longer satisfies the staff-only RLS policies** (which gate `companies`, `opportunities`, `meetings`, `tasks`, `sales_records`, `activity_logs`, `products`, `sectors`, `app_settings`). If your user row in `user_roles` is `member` (or missing), every domain table will return zero rows from the frontend even though the data is there.
 
-- `src/routes/_authenticated/companies.$id.tsx` → `src/routes/_authenticated/companies_.$id.tsx`
-- Update the `createFileRoute` string from `"/_authenticated/companies/$id"` to `"/_authenticated/companies_/$id"` (the generated route ID includes the underscore; the URL `/companies/$id` is preserved because the trailing underscore is stripped from the URL but kept in the route ID).
-- No changes needed to any `<Link to="/companies/$id">` calls — TanStack's path matcher still resolves the URL the same way (it routes through the de-nested route).
-- After Vite regenerates `routeTree.gen.ts`, verify `AuthenticatedCompaniesIdRoute.getParentRoute()` resolves to the `_authenticated` layout, NOT to `AuthenticatedCompaniesRoute`.
+## 1. Is the data physically deleted?
 
-No edits to `companies.tsx` (the list) needed — it remains a leaf route.
+**No.** Live row counts from `pg_stat_user_tables` on the project's database right now:
 
-## 2. Add Edit to Companies page
+| Table | Live rows |
+|---|---|
+| activity_logs | 19 |
+| app_settings | 1 |
+| companies | 3 |
+| meetings | 2 |
+| opportunities | 1 |
+| products | 4 |
+| profiles | 2 |
+| sales_records | 2 |
+| sectors | 6 |
+| tasks | 3 |
+| user_roles | 2 |
+| company_notes, notifications, task_comments | 0 |
 
-In `src/routes/_authenticated/companies.tsx`:
+Non-zero `n_dead_tup` on a few tables just reflects normal updates/deletes during use — not a wipe. No table has been recreated (no reset stats).
 
-- Import `Pencil` from `lucide-react`.
-- Refactor `CompanyForm` to accept:
-  ```ts
-  { sectors, onDone, mode?: "create" | "edit", initialData?: Company }
-  ```
-  - Default `mode = "create"`.
-  - When `mode === "edit"`, seed form state from `initialData`, change dialog title to `t("companies.edit")` (fallback to existing key), and on save call `supabase.from("companies").update(payload).eq("id", initialData.id)` then `logActivity("company", id, "edited", { name })`.
-- In the table actions cell, add a Pencil icon button before the Archive button. Clicking it opens a per-row `<Dialog>` with `<CompanyForm mode="edit" initialData={c} ... />`. Use local `editingId` state to control which row's dialog is open (avoids rendering N dialogs).
-- After save, invalidate `["companies"]`.
+## 2. Is it hidden by RLS?
 
-## 3. Add Edit to Products page
+**Almost certainly yes, for the current session.** Every domain table is gated by `is_staff(auth.uid())`, which returns true only when the user holds the `owner` or `admin` role in `public.user_roles`. The earlier security hardening turn changed new sign-ups to receive `member` (not `admin`), and split `user_roles` writes so only an `owner` (and not yourself) can grant roles. If you signed in with an account that isn't `owner`/`admin`, the Data API will silently return empty arrays for all CRM tables — exactly the "data is gone" symptom.
 
-In `src/routes/_authenticated/products.tsx`:
+This will be confirmed in build mode by running, as the signed-in user: `select public.is_staff(auth.uid()), (select array_agg(role) from public.user_roles where user_id = auth.uid())`.
 
-- Import `Pencil`.
-- Refactor `ProductForm` to accept `mode` + `initialData` (same shape pattern).
-- On edit, `supabase.from("products").update(payload).eq("id", initialData.id)` and `logActivity("product", id, "edited", { name: name_en })`.
-- Add a Pencil icon button on each product card next to Archive. Opens a Dialog with `<ProductForm mode="edit" initialData={p} ... />` controlled by an `editingId` state.
+## 3. Are we connected to the correct project?
 
-## 4. i18n
+**Yes.** `.env` `VITE_SUPABASE_PROJECT_ID = xsmtjocxyyamdzfwunls` matches the Lovable Cloud project info (`https://xsmtjocxyyamdzfwunls.supabase.co`). The app is talking to the right database — the one whose row counts are shown above.
 
-In `src/lib/i18n.ts`, add to both `en` and `ar` under `common`:
-- `en.common.edit = "Edit"`
-- `ar.common.edit = "تعديل"`
+## 4. Did any migration drop / truncate / recreate tables?
 
-(Skip if already present.)
+**No.** The three most recent migrations (`20260620165018`, `20260620165141`, `20260620165309`) contain no `DROP TABLE`, `TRUNCATE`, `DELETE FROM`, or `DROP SCHEMA` statements. They are the policy/role/function hardening migrations from earlier this session:
 
-## 5. Verification
+- `165018` — split `user_roles` ALL policy into per-command policies that block self-modification.
+- `165141` — replaced avatars storage policies with own-folder-or-staff rules + WITH CHECK on UPDATE.
+- `165309` — switched `handle_opportunity_won()` to SECURITY INVOKER.
 
-- Confirm `src/routeTree.gen.ts` shows `AuthenticatedCompaniesIdRoute` (now `AuthenticatedCompanies_IdRoute`) with `getParentRoute: () => AuthenticatedRouteRoute` — not `AuthenticatedCompaniesRoute`.
-- Click a company in the list → full Company 360 page replaces the list view; all 6 tabs (overview, sales, opportunities, tasks, meetings, notes) render.
-- Click Pencil on a company row → dialog opens pre-filled → save updates the row.
-- Same for products.
+None of them touch table data or structure.
 
-## Files touched
+## 5. Evidence summary
 
-- rename `src/routes/_authenticated/companies.$id.tsx` → `src/routes/_authenticated/companies_.$id.tsx` (+ update `createFileRoute` string)
-- edit `src/routes/_authenticated/companies.tsx` (Edit dialog + form refactor)
-- edit `src/routes/_authenticated/products.tsx` (Edit dialog + form refactor)
-- edit `src/lib/i18n.ts` (add `common.edit`)
-- `src/routeTree.gen.ts` regenerates automatically
+- Live row counts above (source: `pg_stat_user_tables`).
+- Migration scans above (source: grep over `supabase/migrations/*.sql`).
+- Project identity match (source: `.env` vs `supabase--project_info`).
+
+## Recommended next step (in build mode)
+
+1. Confirm the hypothesis by checking `is_staff(auth.uid())` and the `user_roles` row for the currently signed-in user.
+2. If the result is `false`/`member`, the fix is a one-row update in `user_roles` for that user (grant `owner` or `admin`) — performed via the `insert` tool, not a migration. Data will immediately reappear in the UI; nothing else needs to change.
+3. If `is_staff` returns `true` and rows are still missing in the UI, investigate the client (cached session, wrong env at build time) — but based on the evidence above, that is unlikely.
+
+No code or schema changes are proposed at this stage.
