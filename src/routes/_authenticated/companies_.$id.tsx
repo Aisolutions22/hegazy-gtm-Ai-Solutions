@@ -29,8 +29,10 @@ function Company360() {
   const { id } = Route.useParams();
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
+  const [editOpen, setEditOpen] = useState(false);
 
   const { data: company } = useCompany(id);
+  const { data: sectors = [] } = useSectors();
   const { data: opps = [] } = useCompanyOpportunities(id);
   const { data: sales = [] } = useCompanySales(id);
   const { data: tasks = [] } = useCompanyTasks(id);
