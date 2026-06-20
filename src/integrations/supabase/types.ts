@@ -668,7 +668,7 @@ export type Database = {
         | "archived"
         | "restored"
         | "status_changed"
-      app_role: "owner" | "admin"
+      app_role: "owner" | "admin" | "member"
       company_type: "customer" | "target" | "opportunity"
       pipeline_status:
         | "lead"
@@ -813,7 +813,7 @@ export const Constants = {
         "restored",
         "status_changed",
       ],
-      app_role: ["owner", "admin"],
+      app_role: ["owner", "admin", "member"],
       company_type: ["customer", "target", "opportunity"],
       pipeline_status: [
         "lead",
