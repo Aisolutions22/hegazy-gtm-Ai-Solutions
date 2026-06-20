@@ -1,0 +1,10 @@
+# Hegazy GTM OS 2026
+
+> Executive Growth & Revenue Operating System for Hegazy Aluminium Group — an internal CRM and revenue platform for managing companies, opportunities, and go-to-market execution.
+
+This application is an internal tool. Most surfaces require authentication and are not crawlable.
+
+## Pages
+
+- [Home](/): Entry point that redirects authenticated users to their dashboard.
+- [Sign in](/auth): Sign-in and sign-up for authorized Hegazy Aluminium Group team members.
