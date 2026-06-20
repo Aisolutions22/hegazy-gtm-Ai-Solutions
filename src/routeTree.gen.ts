@@ -30,7 +30,7 @@ import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedArchiveRouteImport } from './routes/_authenticated/archive'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
-import { Route as AuthenticatedCompaniesIdRouteImport } from './routes/_authenticated/companies.$id'
+import { Route as AuthenticatedCompaniesIdRouteImport } from './routes/_authenticated/companies_.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -143,9 +143,9 @@ const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
 } as any)
 const AuthenticatedCompaniesIdRoute =
   AuthenticatedCompaniesIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => AuthenticatedCompaniesRoute,
+    id: '/companies_/$id',
+    path: '/companies/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -155,7 +155,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/archive': typeof AuthenticatedArchiveRoute
   '/calendar': typeof AuthenticatedCalendarRoute
-  '/companies': typeof AuthenticatedCompaniesRouteWithChildren
+  '/companies': typeof AuthenticatedCompaniesRoute
   '/competitors': typeof AuthenticatedCompetitorsRoute
   '/current-situation': typeof AuthenticatedCurrentSituationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -178,7 +178,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/archive': typeof AuthenticatedArchiveRoute
   '/calendar': typeof AuthenticatedCalendarRoute
-  '/companies': typeof AuthenticatedCompaniesRouteWithChildren
+  '/companies': typeof AuthenticatedCompaniesRoute
   '/competitors': typeof AuthenticatedCompetitorsRoute
   '/current-situation': typeof AuthenticatedCurrentSituationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -203,7 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/archive': typeof AuthenticatedArchiveRoute
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
-  '/_authenticated/companies': typeof AuthenticatedCompaniesRouteWithChildren
+  '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/competitors': typeof AuthenticatedCompetitorsRoute
   '/_authenticated/current-situation': typeof AuthenticatedCurrentSituationRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -217,7 +217,7 @@ export interface FileRoutesById {
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
-  '/_authenticated/companies/$id': typeof AuthenticatedCompaniesIdRoute
+  '/_authenticated/companies_/$id': typeof AuthenticatedCompaniesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -289,7 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sales'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
-    | '/_authenticated/companies/$id'
+    | '/_authenticated/companies_/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -447,36 +447,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActivityRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/companies/$id': {
-      id: '/_authenticated/companies/$id'
-      path: '/$id'
+    '/_authenticated/companies_/$id': {
+      id: '/_authenticated/companies_/$id'
+      path: '/companies/$id'
       fullPath: '/companies/$id'
       preLoaderRoute: typeof AuthenticatedCompaniesIdRouteImport
-      parentRoute: typeof AuthenticatedCompaniesRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
-
-interface AuthenticatedCompaniesRouteChildren {
-  AuthenticatedCompaniesIdRoute: typeof AuthenticatedCompaniesIdRoute
-}
-
-const AuthenticatedCompaniesRouteChildren: AuthenticatedCompaniesRouteChildren =
-  {
-    AuthenticatedCompaniesIdRoute: AuthenticatedCompaniesIdRoute,
-  }
-
-const AuthenticatedCompaniesRouteWithChildren =
-  AuthenticatedCompaniesRoute._addFileChildren(
-    AuthenticatedCompaniesRouteChildren,
-  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedArchiveRoute: typeof AuthenticatedArchiveRoute
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
-  AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRouteWithChildren
+  AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedCompetitorsRoute: typeof AuthenticatedCompetitorsRoute
   AuthenticatedCurrentSituationRoute: typeof AuthenticatedCurrentSituationRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -490,6 +476,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
+  AuthenticatedCompaniesIdRoute: typeof AuthenticatedCompaniesIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -497,7 +484,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedArchiveRoute: AuthenticatedArchiveRoute,
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
-  AuthenticatedCompaniesRoute: AuthenticatedCompaniesRouteWithChildren,
+  AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedCompetitorsRoute: AuthenticatedCompetitorsRoute,
   AuthenticatedCurrentSituationRoute: AuthenticatedCurrentSituationRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
@@ -511,6 +498,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
+  AuthenticatedCompaniesIdRoute: AuthenticatedCompaniesIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
