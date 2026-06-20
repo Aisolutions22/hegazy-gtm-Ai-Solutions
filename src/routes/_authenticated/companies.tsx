@@ -19,18 +19,8 @@ export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
 });
 
-type CompanyRow = {
-  id: string;
-  name: string;
-  type: string;
-  sector_id?: string | null;
-  contact_person?: string | null;
-  phone?: string | null;
-  email?: string | null;
-  website?: string | null;
-  location?: string | null;
-  notes?: string | null;
-};
+type CompanyRow = CompanyFormData & { id: string; name: string; type: string };
+
 
 function CompaniesPage() {
   const { t } = useTranslation();
