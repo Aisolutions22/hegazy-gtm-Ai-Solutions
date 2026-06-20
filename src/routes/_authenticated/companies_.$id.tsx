@@ -61,9 +61,25 @@ function Company360() {
               {company.location && <span>· {company.location}</span>}
             </div>
           </div>
-          <QuickActionsMenu companyId={id} />
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setEditOpen(true)} className="gap-1">
+              <Pencil className="h-4 w-4" />{t("common.edit")}
+            </Button>
+            <QuickActionsMenu companyId={id} />
+          </div>
         </CardContent>
       </Card>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        {editOpen && (
+          <CompanyForm
+            sectors={sectors}
+            mode="edit"
+            initialData={company}
+            onDone={() => setEditOpen(false)}
+          />
+        )}
+      </Dialog>
 
       {/* ICP + KPI */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
