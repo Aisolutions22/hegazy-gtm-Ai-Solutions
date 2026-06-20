@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Archive as ArchiveIcon } from "lucide-react";
+import { Plus, Archive as ArchiveIcon, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { useCompaniesList, useSectors, useArchiveCompany } from "@/hooks/use-company";
@@ -22,17 +22,32 @@ export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
 });
 
+type CompanyRow = {
+  id: string;
+  name: string;
+  type: string;
+  sector_id?: string | null;
+  contact_person?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  location?: string | null;
+  notes?: string | null;
+};
+
 function CompaniesPage() {
   const { t } = useTranslation();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const { data: companies = [] } = useCompaniesList();
   const { data: sectors = [] } = useSectors();
   const archive = useArchiveCompany();
 
   const filtered = companies.filter((c) => c.name.toLowerCase().includes(q.toLowerCase()));
+  const editing = filtered.find((c) => c.id === editingId) ?? companies.find((c) => c.id === editingId);
 
   async function archiveCompany(id: string) {
     await archive.mutateAsync(id);
@@ -80,6 +95,7 @@ function CompaniesPage() {
                 <TableCell className="text-sm">{c.contact_person ?? "—"}</TableCell>
                 <TableCell className="text-sm">{c.phone ?? "—"}</TableCell>
                 <TableCell className="text-end">
+                  <Button variant="ghost" size="icon" onClick={() => setEditingId(c.id)} aria-label={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
                   <Button variant="ghost" size="icon" onClick={() => archiveCompany(c.id)}><ArchiveIcon className="h-4 w-4" /></Button>
                 </TableCell>
               </TableRow>
@@ -87,29 +103,67 @@ function CompaniesPage() {
           </TableBody>
         </Table>
       </Card>
+
+      <Dialog open={!!editingId} onOpenChange={(o) => { if (!o) setEditingId(null); }}>
+        {editing && (
+          <CompanyForm
+            sectors={sectors}
+            mode="edit"
+            initialData={editing as CompanyRow}
+            onDone={() => { setEditingId(null); qc.invalidateQueries({ queryKey: ["companies"] }); }}
+          />
+        )}
+      </Dialog>
     </div>
   );
 }
 
-function CompanyForm({ sectors, onDone }: { sectors: Array<{ id: string; name_en: string; name_ar: string }>; onDone: () => void }) {
+function CompanyForm({
+  sectors,
+  onDone,
+  mode = "create",
+  initialData,
+}: {
+  sectors: Array<{ id: string; name_en: string; name_ar: string }>;
+  onDone: () => void;
+  mode?: "create" | "edit";
+  initialData?: CompanyRow;
+}) {
   const { t } = useTranslation();
-  const [form, setForm] = useState({ name: "", type: "target", sector_id: "", contact_person: "", phone: "", email: "", website: "", location: "", notes: "" });
+  const [form, setForm] = useState({
+    name: initialData?.name ?? "",
+    type: initialData?.type ?? "target",
+    sector_id: initialData?.sector_id ?? "",
+    contact_person: initialData?.contact_person ?? "",
+    phone: initialData?.phone ?? "",
+    email: initialData?.email ?? "",
+    website: initialData?.website ?? "",
+    location: initialData?.location ?? "",
+    notes: initialData?.notes ?? "",
+  });
   const [saving, setSaving] = useState(false);
   async function save() {
     if (!form.name.trim()) { toast.error(t("companies.fields.name")); return; }
     setSaving(true);
     const payload: Record<string, unknown> = { ...form };
     if (!payload.sector_id) delete payload.sector_id;
-    const { data, error } = await supabase.from("companies").insert(payload as never).select().single();
-    setSaving(false);
-    if (error) { toast.error(error.message); return; }
-    if (data) await logActivity("company", data.id, "created", { name: data.name });
+    if (mode === "edit" && initialData) {
+      const { error } = await supabase.from("companies").update(payload as never).eq("id", initialData.id);
+      setSaving(false);
+      if (error) { toast.error(error.message); return; }
+      await logActivity("company", initialData.id, "edited", { name: form.name });
+    } else {
+      const { data, error } = await supabase.from("companies").insert(payload as never).select().single();
+      setSaving(false);
+      if (error) { toast.error(error.message); return; }
+      if (data) await logActivity("company", data.id, "created", { name: data.name });
+    }
     toast.success(t("common.save"));
     onDone();
   }
   return (
     <DialogContent className="max-w-lg">
-      <DialogHeader><DialogTitle>{t("companies.new")}</DialogTitle></DialogHeader>
+      <DialogHeader><DialogTitle>{mode === "edit" ? t("common.edit") : t("companies.new")}</DialogTitle></DialogHeader>
       <div className="space-y-3">
         <div><Label>{t("companies.fields.name")}</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
         <div className="grid grid-cols-2 gap-3">

@@ -1,126 +1,60 @@
+# Fix Company 360 routing + add Edit to Companies & Products
 
-# Company 360 — Executive Command Center
+## 1. Un-nest the Company 360 route
 
-Turn Company 360 into the daily workspace: real meetings, real ICP engine, notes timeline, inline quick actions — all on one page.
+**Problem:** `src/routes/_authenticated/companies.$id.tsx` is currently a child of `companies.tsx` (the list page), which has no `<Outlet />`. Result: navigating to `/companies/:id` silently mounts nothing, list stays visible.
 
-## 1. Database (single migration)
+**Fix:** Rename the file using TanStack Router's trailing-underscore escape:
 
-### `meetings`
-```
-id uuid pk, title text not null, meeting_date timestamptz not null,
-attendees text[], notes text, decisions text,
-company_id uuid → companies (set null), opportunity_id uuid → opportunities (set null),
-created_by uuid, created_at, updated_at
-```
-Indexed on `company_id`, `meeting_date desc`. RLS via `is_staff()`. `archived_at` for soft delete. Plus standard GRANTs + updated_at trigger.
+- `src/routes/_authenticated/companies.$id.tsx` → `src/routes/_authenticated/companies_.$id.tsx`
+- Update the `createFileRoute` string from `"/_authenticated/companies/$id"` to `"/_authenticated/companies_/$id"` (the generated route ID includes the underscore; the URL `/companies/$id` is preserved because the trailing underscore is stripped from the URL but kept in the route ID).
+- No changes needed to any `<Link to="/companies/$id">` calls — TanStack's path matcher still resolves the URL the same way (it routes through the de-nested route).
+- After Vite regenerates `routeTree.gen.ts`, verify `AuthenticatedCompaniesIdRoute.getParentRoute()` resolves to the `_authenticated` layout, NOT to `AuthenticatedCompaniesRoute`.
 
-### `company_notes`
-```
-id uuid pk, company_id uuid → companies (cascade) not null,
-note text not null, created_by uuid, created_at, updated_at, archived_at
-```
-RLS via `is_staff()`, GRANTs, updated_at trigger.
+No edits to `companies.tsx` (the list) needed — it remains a leaf route.
 
-### ICP columns on `companies`
-Add 6 sub-scores (0–max each) + computed total + tier:
-```
-icp_sector_fit smallint default 0           (0..25)
-icp_consumption smallint default 0          (0..20)
-icp_frequency smallint default 0            (0..15)
-icp_profitability smallint default 0        (0..20)
-icp_strategic smallint default 0            (0..10)
-icp_accessibility smallint default 0        (0..10)
-icp_score smallint GENERATED ALWAYS AS (sum of above) STORED
-icp_tier text GENERATED ALWAYS AS (
-  CASE WHEN score>=90 'A' WHEN >=75 'B' WHEN >=50 'C' ELSE 'low' END) STORED
-```
-CHECK constraints enforce each sub-score range. Index on `icp_score desc`.
+## 2. Add Edit to Companies page
 
-### `app_settings` row for ICP weights
-Insert a `key='icp_weights'` row with the default max-points per dimension so the formula stays configurable from Settings later (UI deferred — out of scope for this turn).
+In `src/routes/_authenticated/companies.tsx`:
 
-### Future hook (no code yet)
-Schema-only readiness for "decision → tasks": meetings already has `decisions text`. Conversion UI in a future iteration.
+- Import `Pencil` from `lucide-react`.
+- Refactor `CompanyForm` to accept:
+  ```ts
+  { sectors, onDone, mode?: "create" | "edit", initialData?: Company }
+  ```
+  - Default `mode = "create"`.
+  - When `mode === "edit"`, seed form state from `initialData`, change dialog title to `t("companies.edit")` (fallback to existing key), and on save call `supabase.from("companies").update(payload).eq("id", initialData.id)` then `logActivity("company", id, "edited", { name })`.
+- In the table actions cell, add a Pencil icon button before the Archive button. Clicking it opens a per-row `<Dialog>` with `<CompanyForm mode="edit" initialData={c} ... />`. Use local `editingId` state to control which row's dialog is open (avoids rendering N dialogs).
+- After save, invalidate `["companies"]`.
 
-## 2. Hooks (`src/hooks/`)
+## 3. Add Edit to Products page
 
-- `use-company.ts` — add: `useCompanyMeetings(id)`, `useCompanyNotes(id)`, `useUpdateCompanyIcp(id)`, `useCompanyKpis(id)` (aggregates revenue/profit/tons + open opps/tasks count from existing tables in one parallel batch).
-- `use-meetings.ts` (new) — `useCreateMeeting()` mutation; invalidates `company-meetings`, `company-activity`.
-- `use-notes.ts` (new) — `useCreateNote()` mutation; invalidates `company-notes`, `company-activity`.
-- Existing `use-opportunities.ts` / tasks creation: add `useCreateOpportunity()` and `useCreateTask()` mutations scoped by company.
+In `src/routes/_authenticated/products.tsx`:
 
-All mutations call `logActivity()` so the activity timeline reflects every quick action.
+- Import `Pencil`.
+- Refactor `ProductForm` to accept `mode` + `initialData` (same shape pattern).
+- On edit, `supabase.from("products").update(payload).eq("id", initialData.id)` and `logActivity("product", id, "edited", { name: name_en })`.
+- Add a Pencil icon button on each product card next to Archive. Opens a Dialog with `<ProductForm mode="edit" initialData={p} ... />` controlled by an `editingId` state.
 
-## 3. Company 360 layout (`src/routes/_authenticated/companies.$id.tsx`)
+## 4. i18n
 
-Replace current tabs-only layout with a command-center grid:
+In `src/lib/i18n.ts`, add to both `en` and `ar` under `common`:
+- `en.common.edit = "Edit"`
+- `ar.common.edit = "تعديل"`
 
-```
-┌─ Header: avatar · name · type badge · sector · location · [Quick Actions ▾]
-├─ ICP Score panel (big tier badge A/B/C/Low + score, 6 sub-bars, "Edit scores")
-├─ KPI strip: Revenue YTD · Profit YTD · Tons YTD · Margin · Open Opps · Open Tasks
-├─ Two-column grid:
-│   ├─ Left (2/3):  Tabs[Overview · Sales · Opportunities · Tasks · Meetings · Notes]
-│   │     • Overview = profile fields + latest 3 meetings + latest 3 notes
-│   │     • Meetings tab = list w/ date, attendees, decisions, "+ Add Meeting"
-│   │     • Notes tab = timeline (chronological feed) w/ "+ Add Note"
-│   └─ Right (1/3): Activity Feed (live from activity_logs scoped to this company)
-```
+(Skip if already present.)
 
-Empty states use existing `<EmptyState/>`.
+## 5. Verification
 
-## 4. Quick actions (inline)
-
-Single `<QuickActionsMenu/>` in header → opens dedicated dialog/sheet per action, all pre-filled with `company_id`:
-
-- **Add Opportunity** — dialog: title, product, expected tons/revenue/profit, deadline, pipeline_status (default `lead`).
-- **Add Task** — dialog: title, description, priority, deadline, optional opportunity link.
-- **Add Meeting** — sheet (more fields): title, date/time, attendees (tag input → `text[]`), notes, decisions, optional opportunity link.
-- **Add Note** — small dialog: textarea only.
-
-On success → toast, invalidate relevant queries, close dialog. User never leaves the page.
-
-## 5. ICP edit dialog
-
-`<IcpEditDialog/>` triggered from the ICP panel: 6 sliders (each bounded to its max), live total preview, tier badge updates as user moves sliders. Saves via `useUpdateCompanyIcp`.
-
-## 6. i18n
-
-Add Arabic + English strings for: ICP dimensions & tiers, meetings/notes labels, quick-action buttons, empty states. Update `src/lib/i18n.ts`.
-
-## 7. Sidebar
-
-`/meetings` route already exists as "Coming Soon". Scope of this turn keeps the global Meetings page out — meetings are accessed through Company 360. (Optional: replace stub with a global list of recent meetings across all companies. **Suggest doing this in the same turn since the table now exists** — confirm if you want it included.)
+- Confirm `src/routeTree.gen.ts` shows `AuthenticatedCompaniesIdRoute` (now `AuthenticatedCompanies_IdRoute`) with `getParentRoute: () => AuthenticatedRouteRoute` — not `AuthenticatedCompaniesRoute`.
+- Click a company in the list → full Company 360 page replaces the list view; all 6 tabs (overview, sales, opportunities, tasks, meetings, notes) render.
+- Click Pencil on a company row → dialog opens pre-filled → save updates the row.
+- Same for products.
 
 ## Files touched
 
-**Migration (1):** meetings, company_notes, ICP columns, app_settings seed row.
-
-**New files:**
-- `src/hooks/use-meetings.ts`
-- `src/hooks/use-notes.ts`
-- `src/components/company/quick-actions-menu.tsx`
-- `src/components/company/icp-panel.tsx`
-- `src/components/company/icp-edit-dialog.tsx`
-- `src/components/company/add-opportunity-dialog.tsx`
-- `src/components/company/add-task-dialog.tsx`
-- `src/components/company/add-meeting-sheet.tsx`
-- `src/components/company/add-note-dialog.tsx`
-- `src/components/company/kpi-strip.tsx`
-- `src/components/company/activity-feed.tsx`
-- `src/components/company/notes-timeline.tsx`
-- `src/components/company/meetings-list.tsx`
-
-**Edited:**
-- `src/hooks/use-company.ts` (add KPIs, meetings, notes, ICP update)
-- `src/hooks/use-opportunities.ts` (add create mutation)
-- `src/routes/_authenticated/companies.$id.tsx` (full rewrite around new layout)
-- `src/lib/i18n.ts`
-
-## Out of scope (deferred, explicit)
-- Settings UI to edit ICP weights (row exists, no editor yet).
-- Converting meeting decisions into tasks (schema supports it via free-text `decisions`; conversion UX later).
-- Global Meetings page redesign (unless you say "yes" to including it).
-
-## Open question
-Include a global Meetings list page (`/meetings`) in this same turn now that the table exists? Default: **no, keep this turn scoped to Company 360.**
+- rename `src/routes/_authenticated/companies.$id.tsx` → `src/routes/_authenticated/companies_.$id.tsx` (+ update `createFileRoute` string)
+- edit `src/routes/_authenticated/companies.tsx` (Edit dialog + form refactor)
+- edit `src/routes/_authenticated/products.tsx` (Edit dialog + form refactor)
+- edit `src/lib/i18n.ts` (add `common.edit`)
+- `src/routeTree.gen.ts` regenerates automatically

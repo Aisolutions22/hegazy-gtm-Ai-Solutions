@@ -17,7 +17,7 @@ import { ActivityFeed } from "@/components/company/activity-feed";
 import { NotesTimeline } from "@/components/company/notes-timeline";
 import { MeetingsList } from "@/components/company/meetings-list";
 
-export const Route = createFileRoute("/_authenticated/companies/$id")({
+export const Route = createFileRoute("/_authenticated/companies_/$id")({
   component: Company360,
 });
 
