@@ -1,14 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog } from "@/components/ui/dialog";
 import { fmtCurrency, fmtMonth } from "@/lib/format";
-import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote } from "lucide-react";
+import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import {
-  useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks,
+  useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks, useSectors,
 } from "@/hooks/use-company";
 import { IcpPanel } from "@/components/company/icp-panel";
 import { KpiStrip } from "@/components/company/kpi-strip";
@@ -16,6 +19,7 @@ import { QuickActionsMenu, QuickActionButton } from "@/components/company/quick-
 import { ActivityFeed } from "@/components/company/activity-feed";
 import { NotesTimeline } from "@/components/company/notes-timeline";
 import { MeetingsList } from "@/components/company/meetings-list";
+import { CompanyForm } from "@/components/company/company-form";
 
 export const Route = createFileRoute("/_authenticated/companies_/$id")({
   component: Company360,
@@ -25,8 +29,10 @@ function Company360() {
   const { id } = Route.useParams();
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
+  const [editOpen, setEditOpen] = useState(false);
 
   const { data: company } = useCompany(id);
+  const { data: sectors = [] } = useSectors();
   const { data: opps = [] } = useCompanyOpportunities(id);
   const { data: sales = [] } = useCompanySales(id);
   const { data: tasks = [] } = useCompanyTasks(id);
@@ -55,9 +61,25 @@ function Company360() {
               {company.location && <span>· {company.location}</span>}
             </div>
           </div>
-          <QuickActionsMenu companyId={id} />
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setEditOpen(true)} className="gap-1">
+              <Pencil className="h-4 w-4" />{t("common.edit")}
+            </Button>
+            <QuickActionsMenu companyId={id} />
+          </div>
         </CardContent>
       </Card>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        {editOpen && (
+          <CompanyForm
+            sectors={sectors}
+            mode="edit"
+            initialData={company}
+            onDone={() => setEditOpen(false)}
+          />
+        )}
+      </Dialog>
 
       {/* ICP + KPI */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
