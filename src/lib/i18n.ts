@@ -382,7 +382,7 @@ const resources = {
         analytics: "Sales Analytics", tasks: "Tasks", calendar: "Calendar",
         meetings: "Meetings & Decisions", intelligence: "Strategic Intelligence",
         competitors: "Competitors", goals: "Goals & Roadmap", activity: "Activity Log",
-        archive: "Archive", settings: "Settings", sales: "Sales Records",
+        archive: "Archive", settings: "Settings", sales: "Sales Records", contacts: "Contacts",
       },
       common: {
         search: "Search", add: "Add", edit: "Edit", save: "Save", cancel: "Cancel",
