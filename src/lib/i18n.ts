@@ -520,7 +520,10 @@ const resources = {
         tabs: { profile: "Profile", sales: "Sales", opportunities: "Opportunities", tasks: "Tasks", timeline: "Timeline" },
       },
       company360: {
-        tabs: { overview: "Overview", meetings: "Meetings", notes: "Notes" },
+        tabs: { overview: "Overview", team: "Team", products: "Products", meetings: "Meetings", notes: "Notes" },
+        linkProduct: "Link product",
+        unlinkProduct: "Unlink",
+        addNewProduct: "Add new product",
         recentMeetings: "Recent Meetings",
         recentNotes: "Recent Notes",
         activity: "Activity Feed",
