@@ -96,6 +96,8 @@ function Company360() {
       <Tabs defaultValue="overview">
         <TabsList className="flex flex-wrap">
           <TabsTrigger value="overview">{t("company360.tabs.overview")}</TabsTrigger>
+          <TabsTrigger value="team"><Users className="h-3.5 w-3.5 me-1" />{t("company360.tabs.team")}</TabsTrigger>
+          <TabsTrigger value="products"><Package className="h-3.5 w-3.5 me-1" />{t("company360.tabs.products")}</TabsTrigger>
           <TabsTrigger value="sales">{t("companies.tabs.sales")}</TabsTrigger>
           <TabsTrigger value="opportunities">{t("companies.tabs.opportunities")}</TabsTrigger>
           <TabsTrigger value="tasks">{t("companies.tabs.tasks")}</TabsTrigger>
