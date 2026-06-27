@@ -134,6 +134,20 @@ function Company360() {
           </div>
         </TabsContent>
 
+        <TabsContent value="team">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Users className="h-4 w-4" />{t("company360.tabs.team")}</CardTitle></CardHeader>
+            <CardContent><TeamTab companyId={id} /></CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="products">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Package className="h-4 w-4" />{t("company360.tabs.products")}</CardTitle></CardHeader>
+            <CardContent><ProductsTab companyId={id} /></CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="sales">
           <Card><CardContent className="p-0">
             {sales.length === 0 ? <EmptyState icon={Briefcase} title={t("common.empty")} compact /> :
