@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog } from "@/components/ui/dialog";
 import { fmtCurrency, fmtMonth } from "@/lib/format";
-import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil } from "lucide-react";
+import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import {
   useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks, useSectors,
@@ -20,6 +20,8 @@ import { ActivityFeed } from "@/components/company/activity-feed";
 import { NotesTimeline } from "@/components/company/notes-timeline";
 import { MeetingsList } from "@/components/company/meetings-list";
 import { CompanyForm } from "@/components/company/company-form";
+import { TeamTab } from "@/components/company/team-tab";
+import { ProductsTab } from "@/components/company/products-tab";
 
 export const Route = createFileRoute("/_authenticated/companies_/$id")({
   component: Company360,

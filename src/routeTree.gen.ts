@@ -25,6 +25,7 @@ import { Route as AuthenticatedGtmRouteImport } from './routes/_authenticated/gt
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCurrentSituationRouteImport } from './routes/_authenticated/current-situation'
+import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedCompetitorsRouteImport } from './routes/_authenticated/competitors'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
@@ -116,6 +117,11 @@ const AuthenticatedCurrentSituationRoute =
     path: '/current-situation',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedContactsRoute = AuthenticatedContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCompetitorsRoute =
   AuthenticatedCompetitorsRouteImport.update({
     id: '/competitors',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/competitors': typeof AuthenticatedCompetitorsRoute
+  '/contacts': typeof AuthenticatedContactsRoute
   '/current-situation': typeof AuthenticatedCurrentSituationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/calendar': typeof AuthenticatedCalendarRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/competitors': typeof AuthenticatedCompetitorsRoute
+  '/contacts': typeof AuthenticatedContactsRoute
   '/current-situation': typeof AuthenticatedCurrentSituationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/competitors': typeof AuthenticatedCompetitorsRoute
+  '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/current-situation': typeof AuthenticatedCurrentSituationRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/companies'
     | '/competitors'
+    | '/contacts'
     | '/current-situation'
     | '/dashboard'
     | '/goals'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/calendar'
     | '/companies'
     | '/competitors'
+    | '/contacts'
     | '/current-situation'
     | '/dashboard'
     | '/goals'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendar'
     | '/_authenticated/companies'
     | '/_authenticated/competitors'
+    | '/_authenticated/contacts'
     | '/_authenticated/current-situation'
     | '/_authenticated/dashboard'
     | '/_authenticated/goals'
@@ -425,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCurrentSituationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/contacts': {
+      id: '/_authenticated/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AuthenticatedContactsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/competitors': {
       id: '/_authenticated/competitors'
       path: '/competitors'
@@ -484,6 +503,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedCompetitorsRoute: typeof AuthenticatedCompetitorsRoute
+  AuthenticatedContactsRoute: typeof AuthenticatedContactsRoute
   AuthenticatedCurrentSituationRoute: typeof AuthenticatedCurrentSituationRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
@@ -506,6 +526,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedCompetitorsRoute: AuthenticatedCompetitorsRoute,
+  AuthenticatedContactsRoute: AuthenticatedContactsRoute,
   AuthenticatedCurrentSituationRoute: AuthenticatedCurrentSituationRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
