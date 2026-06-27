@@ -217,6 +217,7 @@ const resources = {
           email: "البريد",
           notes: "ملاحظات",
           status: "الحالة",
+          createdAt: "تاريخ الإضافة",
         },
         tabs: {
           profile: "الملف",
