@@ -67,12 +67,13 @@ function CompaniesPage() {
               <TableHead>{t("companies.fields.sector")}</TableHead>
               <TableHead>{t("companies.fields.contactPerson")}</TableHead>
               <TableHead>{t("companies.fields.phone")}</TableHead>
+              <TableHead>{t("companies.fields.createdAt")}</TableHead>
               <TableHead className="text-end">{t("common.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 && (
-              <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">{t("common.empty")}</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">{t("common.empty")}</TableCell></TableRow>
             )}
             {filtered.map((c) => (
               <TableRow key={c.id}>
@@ -81,6 +82,7 @@ function CompaniesPage() {
                 <TableCell className="text-sm text-muted-foreground">{c.sector?.name_en ?? "—"}</TableCell>
                 <TableCell className="text-sm">{c.contact_person ?? "—"}</TableCell>
                 <TableCell className="text-sm">{c.phone ?? "—"}</TableCell>
+                <TableCell className="text-sm text-muted-foreground tabular-nums">{fmtDate((c as CompanyRow).created_at, i18n.language)}</TableCell>
                 <TableCell className="text-end">
                   <Button variant="ghost" size="icon" onClick={() => setEditingId(c.id)} aria-label={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
                   <Button variant="ghost" size="icon" onClick={() => archiveCompany(c.id)}><ArchiveIcon className="h-4 w-4" /></Button>
