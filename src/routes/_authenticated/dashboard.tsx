@@ -209,37 +209,75 @@ function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent Activities */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2">
-            <ActivityIcon className="h-4 w-4 text-primary" />
-            {t("dashboard.recentActivities")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          {(activities ?? []).length === 0 ? (
-            <EmptyState icon={ActivityIcon} title={t("dashboard.noActivity")} compact />
-          ) : (
-            <div className="divide-y divide-border/50">
-              {(activities ?? []).map((a) => (
-                <div key={a.id} className="flex items-center justify-between gap-2 py-1.5">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <ActivityIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                    <span className="text-xs">
-                      <span className="text-muted-foreground">{t(`activity.actions.${a.action}`)}</span>{" "}
-                      <span className="font-medium">{a.entity_type}</span>
+      {/* Recent Activities + Recent Companies */}
+      <div className="grid lg:grid-cols-2 gap-3">
+        <Card className="metal-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-primary" />
+              {t("dashboard.recentCompanies")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {(recentCompanies ?? []).length === 0 ? (
+              <EmptyState icon={Building2} title={t("common.empty")} compact />
+            ) : (
+              <div className="divide-y divide-border/50">
+                {(recentCompanies ?? []).map((c) => (
+                  <Link
+                    key={c.id}
+                    to="/companies/$id"
+                    params={{ id: c.id }}
+                    className="flex items-center justify-between gap-2 py-1.5 hover:bg-muted/40 -mx-2 px-2 rounded transition-colors"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-xs font-medium truncate">{c.name}</span>
+                      <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0">
+                        {t(`companies.types.${c.type}`)}
+                      </Badge>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
+                      {fmtDate(c.created_at, locale)}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <ActivityIcon className="h-4 w-4 text-primary" />
+              {t("dashboard.recentActivities")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {(activities ?? []).length === 0 ? (
+              <EmptyState icon={ActivityIcon} title={t("dashboard.noActivity")} compact />
+            ) : (
+              <div className="divide-y divide-border/50">
+                {(activities ?? []).map((a) => (
+                  <div key={a.id} className="flex items-center justify-between gap-2 py-1.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <ActivityIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                      <span className="text-xs">
+                        <span className="text-muted-foreground">{t(`activity.actions.${a.action}`)}</span>{" "}
+                        <span className="font-medium">{a.entity_type}</span>
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
+                      {fmtDate(a.created_at, locale)}
                     </span>
                   </div>
-                  <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
-                    {fmtDate(a.created_at, locale)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
