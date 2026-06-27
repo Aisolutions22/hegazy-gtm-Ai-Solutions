@@ -29,6 +29,7 @@ function Dashboard() {
   const { data: todayTasks } = useTodayTasks();
   const { data: upcoming } = useUpcomingDeadlines();
   const { data: activities } = useRecentActivities();
+  const { data: recentCompanies } = useRecentCompanies();
 
   const kpiCards = [
     { label: t("dashboard.revenueYtd"), value: fmtCurrency(kpis?.rev, locale), icon: DollarSign },
