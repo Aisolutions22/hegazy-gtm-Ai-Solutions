@@ -110,7 +110,6 @@ function Company360() {
             <Card className="lg:col-span-2">
               <CardHeader className="pb-2"><CardTitle className="text-sm">{t("companies.tabs.profile")}</CardTitle></CardHeader>
               <CardContent className="grid sm:grid-cols-2 gap-3 text-sm">
-                <Info label={t("companies.fields.contactPerson")} value={company.contact_person} />
                 <Info label={t("companies.fields.phone")} value={company.phone} />
                 <Info label={t("companies.fields.email")} value={company.email} />
                 <Info label={t("companies.fields.website")} value={company.website} />
