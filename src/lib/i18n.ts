@@ -406,6 +406,7 @@ const resources = {
         noActivity: "No activity recorded yet",
         noDeadlines: "Nothing due in the next 7 days",
         noChartData: "No sales data to chart yet",
+        recentCompanies: "Recently Added Companies",
         advance: "Advance",
       },
       cockpit: {
