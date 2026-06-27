@@ -93,6 +93,7 @@ const resources = {
         noActivity: "لا يوجد نشاط بعد",
         noDeadlines: "لا توجد مواعيد خلال الأسبوع القادم",
         noChartData: "لا توجد بيانات مبيعات لعرض الاتجاه",
+        recentCompanies: "آخر الشركات المُضافة",
         advance: "ادفع",
       },
       cockpit: {
