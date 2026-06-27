@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Building2, Package, Target, ListChecks, BarChart3, CalendarDays,
   Users2, Brain, Swords, Goal, Activity, Archive, Settings, Compass, Sparkles,
-  Sun, Moon, Globe, LogOut, Search, Bell, Gauge,
+  Sun, Moon, Globe, LogOut, Search, Bell, Gauge, UserRound,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
@@ -37,6 +37,7 @@ const navGroups = (t: (k: string) => string) => [
     label: t("navGroups.revenue"),
     items: [
       { to: "/companies", icon: Building2, label: t("nav.companies") },
+      { to: "/contacts", icon: UserRound, label: t("nav.contacts") },
       { to: "/products", icon: Package, label: t("nav.products") },
       { to: "/opportunities", icon: Target, label: t("nav.opportunities") },
       { to: "/sales", icon: BarChart3, label: t("nav.sales") },

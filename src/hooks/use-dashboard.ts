@@ -108,3 +108,18 @@ export function useRecentActivities() {
     },
   });
 }
+
+export function useRecentCompanies() {
+  return useQuery({
+    queryKey: ["dashboard-recent-companies"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("companies")
+        .select("id,name,created_at,type")
+        .is("archived_at", null)
+        .order("created_at", { ascending: false })
+        .limit(5);
+      return data ?? [];
+    },
+  });
+}

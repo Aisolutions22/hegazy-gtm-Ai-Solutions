@@ -101,10 +101,9 @@ export function CompanyForm({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label>{t("companies.fields.contactPerson")}</Label><Input value={form.contact_person} onChange={(e) => setForm({ ...form, contact_person: e.target.value })} /></div>
           <div><Label>{t("companies.fields.phone")}</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
           <div><Label>{t("companies.fields.email")}</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-          <div><Label>{t("companies.fields.location")}</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
+          <div className="col-span-2"><Label>{t("companies.fields.location")}</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
         </div>
         <div><Label>{t("companies.fields.website")}</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} /></div>
         <div><Label>{t("companies.fields.linkedin")}</Label><Input value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} /></div>

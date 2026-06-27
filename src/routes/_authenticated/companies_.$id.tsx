@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog } from "@/components/ui/dialog";
 import { fmtCurrency, fmtMonth } from "@/lib/format";
-import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil } from "lucide-react";
+import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import {
   useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks, useSectors,
@@ -20,6 +20,8 @@ import { ActivityFeed } from "@/components/company/activity-feed";
 import { NotesTimeline } from "@/components/company/notes-timeline";
 import { MeetingsList } from "@/components/company/meetings-list";
 import { CompanyForm } from "@/components/company/company-form";
+import { TeamTab } from "@/components/company/team-tab";
+import { ProductsTab } from "@/components/company/products-tab";
 
 export const Route = createFileRoute("/_authenticated/companies_/$id")({
   component: Company360,
@@ -94,6 +96,8 @@ function Company360() {
       <Tabs defaultValue="overview">
         <TabsList className="flex flex-wrap">
           <TabsTrigger value="overview">{t("company360.tabs.overview")}</TabsTrigger>
+          <TabsTrigger value="team"><Users className="h-3.5 w-3.5 me-1" />{t("company360.tabs.team")}</TabsTrigger>
+          <TabsTrigger value="products"><Package className="h-3.5 w-3.5 me-1" />{t("company360.tabs.products")}</TabsTrigger>
           <TabsTrigger value="sales">{t("companies.tabs.sales")}</TabsTrigger>
           <TabsTrigger value="opportunities">{t("companies.tabs.opportunities")}</TabsTrigger>
           <TabsTrigger value="tasks">{t("companies.tabs.tasks")}</TabsTrigger>
@@ -106,7 +110,6 @@ function Company360() {
             <Card className="lg:col-span-2">
               <CardHeader className="pb-2"><CardTitle className="text-sm">{t("companies.tabs.profile")}</CardTitle></CardHeader>
               <CardContent className="grid sm:grid-cols-2 gap-3 text-sm">
-                <Info label={t("companies.fields.contactPerson")} value={company.contact_person} />
                 <Info label={t("companies.fields.phone")} value={company.phone} />
                 <Info label={t("companies.fields.email")} value={company.email} />
                 <Info label={t("companies.fields.website")} value={company.website} />
@@ -129,6 +132,20 @@ function Company360() {
               <CardContent><NotesTimeline companyId={id} limit={3} /></CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="team">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Users className="h-4 w-4" />{t("company360.tabs.team")}</CardTitle></CardHeader>
+            <CardContent><TeamTab companyId={id} /></CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="products">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><Package className="h-4 w-4" />{t("company360.tabs.products")}</CardTitle></CardHeader>
+            <CardContent><ProductsTab companyId={id} /></CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="sales">
