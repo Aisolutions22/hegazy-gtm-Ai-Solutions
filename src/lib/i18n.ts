@@ -228,7 +228,10 @@ const resources = {
         },
       },
       company360: {
-        tabs: { overview: "نظرة عامة", meetings: "الاجتماعات", notes: "الملاحظات" },
+        tabs: { overview: "نظرة عامة", team: "الموظفون", products: "المنتجات", meetings: "الاجتماعات", notes: "الملاحظات" },
+        linkProduct: "ربط منتج",
+        unlinkProduct: "إلغاء الربط",
+        addNewProduct: "إضافة منتج جديد",
         recentMeetings: "آخر الاجتماعات",
         recentNotes: "آخر الملاحظات",
         activity: "تيار النشاط",
