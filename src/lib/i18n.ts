@@ -41,6 +41,7 @@ const resources = {
         archive: "الأرشيف",
         settings: "الإعدادات",
         sales: "سجل المبيعات",
+        contacts: "الأشخاص",
       },
       common: {
         search: "بحث",
