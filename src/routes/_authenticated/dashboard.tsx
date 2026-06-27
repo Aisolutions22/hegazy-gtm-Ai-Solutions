@@ -7,12 +7,12 @@ import { EmptyState } from "@/components/empty-state";
 import { fmtCurrency, fmtNumber, fmtPercent, fmtDate } from "@/lib/format";
 import {
   TrendingUp, DollarSign, Percent, Package, Users, Target,
-  CalendarClock, ListChecks, Sparkles, Activity as ActivityIcon, Factory,
+  CalendarClock, ListChecks, Sparkles, Activity as ActivityIcon, Factory, Building2,
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend } from "recharts";
 import {
   useDashboardKpis, useDashboardMonthly, useTopOpportunities,
-  useTodayTasks, useUpcomingDeadlines, useRecentActivities,
+  useTodayTasks, useUpcomingDeadlines, useRecentActivities, useRecentCompanies,
 } from "@/hooks/use-dashboard";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
