@@ -23,7 +23,7 @@ type CompanyRow = CompanyFormData & { id: string; name: string; type: string; cr
 
 
 function CompaniesPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
