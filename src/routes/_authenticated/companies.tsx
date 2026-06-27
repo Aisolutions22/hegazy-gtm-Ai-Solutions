@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
 });
 
-type CompanyRow = CompanyFormData & { id: string; name: string; type: string };
+type CompanyRow = CompanyFormData & { id: string; name: string; type: string; created_at?: string };
 
 
 function CompaniesPage() {
