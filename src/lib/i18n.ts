@@ -516,7 +516,7 @@ const resources = {
       companies: {
         title: "Companies", new: "New Company",
         types: { customer: "Current Customer", target: "Target Account", opportunity: "Opportunity" },
-        fields: { name: "Company name", type: "Type", sector: "Sector", website: "Website", linkedin: "LinkedIn", location: "Location", contactPerson: "Contact person", phone: "Phone", email: "Email", notes: "Notes", status: "Status" },
+        fields: { name: "Company name", type: "Type", sector: "Sector", website: "Website", linkedin: "LinkedIn", location: "Location", contactPerson: "Contact person", phone: "Phone", email: "Email", notes: "Notes", status: "Status", createdAt: "Created" },
         tabs: { profile: "Profile", sales: "Sales", opportunities: "Opportunities", tasks: "Tasks", timeline: "Timeline" },
       },
       company360: {
