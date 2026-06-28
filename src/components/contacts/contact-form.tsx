@@ -40,8 +40,15 @@ export function ContactForm({
 
   async function onSave() {
     if (!form.full_name.trim()) { toast.error(t("contacts.validation.nameRequired")); return; }
+    let linkedin: string | null;
     try {
-      await save.mutateAsync({ id: initialData?.id, ...form });
+      linkedin = normalizeUrlForStorage(form.linkedin);
+    } catch {
+      toast.error("LinkedIn must start with http(s)://");
+      return;
+    }
+    try {
+      await save.mutateAsync({ id: initialData?.id, ...form, linkedin });
       toast.success(t("common.save"));
       onDone();
     } catch (e: unknown) {
