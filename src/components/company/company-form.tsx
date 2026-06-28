@@ -11,6 +11,7 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
+import { normalizeUrlForStorage } from "@/lib/url";
 
 export type CompanyFormData = {
   id?: string;
@@ -55,8 +56,17 @@ export function CompanyForm({
 
   async function save() {
     if (!form.name.trim()) { toast.error(t("companies.fields.name")); return; }
+    let website: string | null;
+    let linkedin: string | null;
+    try {
+      website = normalizeUrlForStorage(form.website);
+      linkedin = normalizeUrlForStorage(form.linkedin);
+    } catch {
+      toast.error("Website / LinkedIn must start with http(s)://");
+      return;
+    }
     setSaving(true);
-    const payload: Record<string, unknown> = { ...form };
+    const payload: Record<string, unknown> = { ...form, website, linkedin };
     if (!payload.sector_id) delete payload.sector_id;
     if (mode === "edit" && initialData?.id) {
       const { error } = await supabase.from("companies").update(payload as never).eq("id", initialData.id);

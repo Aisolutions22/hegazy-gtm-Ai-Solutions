@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useSaveContact, type ContactRow } from "@/hooks/use-contacts";
 import { CompanyCombobox } from "@/components/contacts/company-combobox";
 import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
+import { normalizeUrlForStorage } from "@/lib/url";
 
 export function ContactForm({
   onDone,
@@ -39,8 +40,15 @@ export function ContactForm({
 
   async function onSave() {
     if (!form.full_name.trim()) { toast.error(t("contacts.validation.nameRequired")); return; }
+    let linkedin: string | null;
     try {
-      await save.mutateAsync({ id: initialData?.id, ...form });
+      linkedin = normalizeUrlForStorage(form.linkedin);
+    } catch {
+      toast.error("LinkedIn must start with http(s)://");
+      return;
+    }
+    try {
+      await save.mutateAsync({ id: initialData?.id, ...form, linkedin });
       toast.success(t("common.save"));
       onDone();
     } catch (e: unknown) {
