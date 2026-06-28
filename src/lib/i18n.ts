@@ -293,7 +293,11 @@ const resources = {
         defaultMargin: "متوسط الهامش %",
         sectorGroupLabel: "المنتجات والمواصفات",
         otherSector: "أخرى",
+        viewCompanies: "عرض الشركات",
+        companiesUsing: "الشركات التي تستخدم هذا المنتج",
+        allSectors: "كل القطاعات",
       },
+
       contacts: {
         title: "الأشخاص",
         new: "إضافة شخص",
@@ -587,7 +591,7 @@ const resources = {
           noteRequired: "Note is required",
         },
       },
-      products: { title: "Products", new: "New Product", defaultMargin: "Avg. Margin %", sectorGroupLabel: "Products & Specialties", otherSector: "Other" },
+      products: { title: "Products", new: "New Product", defaultMargin: "Avg. Margin %", sectorGroupLabel: "Products & Specialties", otherSector: "Other", viewCompanies: "View companies", companiesUsing: "Companies using this product", allSectors: "All sectors" },
       contacts: {
         title: "Contacts",
         new: "Add contact",

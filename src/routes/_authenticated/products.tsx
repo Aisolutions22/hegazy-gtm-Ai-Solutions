@@ -11,7 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Archive as ArchiveIcon, Package, Pencil } from "lucide-react";
+import { Plus, Archive as ArchiveIcon, Package, Pencil, Building2 } from "lucide-react";
+import { ProductCompaniesDialog } from "@/components/products/product-companies-dialog";
+
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { useSectors } from "@/hooks/use-company";
@@ -34,6 +36,8 @@ function ProductsPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [viewingId, setViewingId] = useState<string | null>(null);
+
   const { data: products = [] } = useQuery<ProductRow[]>({
     queryKey: ["products"],
     queryFn: async () => (await supabase.from("products").select("*").is("archived_at", null).order("created_at")).data as ProductRow[] ?? [],
@@ -91,9 +95,11 @@ function ProductsPage() {
                       <div className="flex items-start justify-between mb-2">
                         <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center"><Package className="h-5 w-5 text-primary" /></div>
                         <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => setViewingId(p.id)} aria-label={t("products.viewCompanies")} title={t("products.viewCompanies")}><Building2 className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="icon" onClick={() => setEditingId(p.id)} aria-label={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="icon" onClick={() => archive(p.id)}><ArchiveIcon className="h-4 w-4" /></Button>
                         </div>
+
                       </div>
                       <h3 className="font-semibold">{ar ? p.name_ar : p.name_en}</h3>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.description}</p>
@@ -117,7 +123,18 @@ function ProductsPage() {
           />
         )}
       </Dialog>
+
+      <ProductCompaniesDialog
+        productId={viewingId}
+        productName={(() => {
+          const p = products.find((x) => x.id === viewingId);
+          return p ? (ar ? p.name_ar : p.name_en) : undefined;
+        })()}
+        open={!!viewingId}
+        onOpenChange={(o) => { if (!o) setViewingId(null); }}
+      />
     </div>
+
   );
 }
 

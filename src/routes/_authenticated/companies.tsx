@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { Plus, Archive as ArchiveIcon, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { CompanyForm, type CompanyFormData } from "@/components/company/company-form";
@@ -24,8 +26,10 @@ type CompanyRow = CompanyFormData & { id: string; name: string; type: string; cr
 
 function CompaniesPage() {
   const { t, i18n } = useTranslation();
+  const ar = i18n.language === "ar";
   const qc = useQueryClient();
   const [q, setQ] = useState("");
+  const [sectorFilter, setSectorFilter] = useState<string>("__all__");
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -33,7 +37,12 @@ function CompaniesPage() {
   const { data: sectors = [] } = useSectors();
   const archive = useArchiveCompany();
 
-  const filtered = companies.filter((c) => c.name.toLowerCase().includes(q.toLowerCase()));
+  const filtered = companies.filter((c) => {
+    if (!c.name.toLowerCase().includes(q.toLowerCase())) return false;
+    if (sectorFilter !== "__all__" && (c as { sector_id?: string | null }).sector_id !== sectorFilter) return false;
+    return true;
+  });
+
   const editing = filtered.find((c) => c.id === editingId) ?? companies.find((c) => c.id === editingId);
 
   async function archiveCompany(id: string) {
@@ -55,8 +64,20 @@ function CompaniesPage() {
         }
       />
       <Card className="mb-4"><CardContent className="p-3">
-        <Input placeholder={t("common.search")} value={q} onChange={(e) => setQ(e.target.value)} />
+        <div className="flex gap-2 items-center">
+          <Input className="flex-1" placeholder={t("common.search")} value={q} onChange={(e) => setQ(e.target.value)} />
+          <Select value={sectorFilter} onValueChange={setSectorFilter}>
+            <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{t("products.allSectors")}</SelectItem>
+              {sectors.map((s) => (
+                <SelectItem key={s.id} value={s.id}>{ar ? s.name_ar : s.name_en}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardContent></Card>
+
 
       <Card>
         <Table>

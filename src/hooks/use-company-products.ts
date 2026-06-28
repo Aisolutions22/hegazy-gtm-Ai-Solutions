@@ -71,3 +71,31 @@ export function useAllProductsForPick() {
     },
   });
 }
+
+export type ProductCompanyRow = {
+  id: string;
+  product_id: string;
+  company_id: string;
+  company: {
+    id: string;
+    name: string;
+    type: string;
+    sector?: { id: string; name_en: string; name_ar: string } | null;
+  } | null;
+};
+
+export function useProductCompanies(productId: string | null) {
+  return useQuery({
+    queryKey: ["product-companies", productId],
+    enabled: !!productId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("company_products" as never)
+        .select("id,product_id,company_id,company:companies(id,name,type,sector:sectors(id,name_en,name_ar))")
+        .eq("product_id", productId as string);
+      if (error) throw error;
+      return (data ?? []) as unknown as ProductCompanyRow[];
+    },
+  });
+}
+
