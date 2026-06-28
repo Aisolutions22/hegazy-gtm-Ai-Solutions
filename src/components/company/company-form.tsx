@@ -11,6 +11,7 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
+import { normalizeUrlForStorage } from "@/lib/url";
 
 export type CompanyFormData = {
   id?: string;
