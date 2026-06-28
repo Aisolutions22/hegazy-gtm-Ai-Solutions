@@ -9,6 +9,7 @@ export type ContactRow = {
   job_title: string | null;
   phone: string | null;
   email: string | null;
+  linkedin: string | null;
   is_primary: boolean;
   notes: string | null;
   created_at: string;
@@ -73,6 +74,7 @@ export type SaveContactInput = {
   job_title?: string | null;
   phone?: string | null;
   email?: string | null;
+  linkedin?: string | null;
   is_primary: boolean;
   notes?: string | null;
   company_id: string | null;

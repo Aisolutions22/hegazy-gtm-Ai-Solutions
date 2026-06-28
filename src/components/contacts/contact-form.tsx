@@ -9,6 +9,7 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { toast } from "sonner";
 import { useSaveContact, type ContactRow } from "@/hooks/use-contacts";
 import { CompanyCombobox } from "@/components/contacts/company-combobox";
+import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
 
 export function ContactForm({
   onDone,
@@ -30,6 +31,7 @@ export function ContactForm({
     job_title: initialData?.job_title ?? "",
     phone: initialData?.phone ?? "",
     email: initialData?.email ?? "",
+    linkedin: (initialData as { linkedin?: string | null } | undefined)?.linkedin ?? "",
     is_primary: initialData?.is_primary ?? false,
     notes: initialData?.notes ?? "",
     company_id: (initialData?.company_id ?? lockedCompanyId ?? null) as string | null,
@@ -69,6 +71,10 @@ export function ContactForm({
             <Label>{t("contacts.fields.email")}</Label>
             <Input type="email" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
+          <div className="col-span-2">
+            <Label>{t("contacts.fields.linkedin")}</Label>
+            <Input value={form.linkedin ?? ""} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="https://linkedin.com/in/..." />
+          </div>
         </div>
         <div>
           <Label>{t("contacts.fields.company")}</Label>
@@ -85,6 +91,11 @@ export function ContactForm({
           <Label>{t("contacts.fields.notes")}</Label>
           <Textarea value={form.notes ?? ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} />
         </div>
+        {mode === "edit" && initialData?.id ? (
+          <ExtraFieldsManager entityType="contact" entityId={initialData.id} />
+        ) : (
+          <ExtraFieldsHint />
+        )}
       </div>
       <DialogFooter>
         <Button variant="ghost" onClick={onDone}>{t("common.cancel")}</Button>

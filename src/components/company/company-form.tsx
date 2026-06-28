@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
+import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
 
 export type CompanyFormData = {
   id?: string;
@@ -108,6 +109,11 @@ export function CompanyForm({
         <div><Label>{t("companies.fields.website")}</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} /></div>
         <div><Label>{t("companies.fields.linkedin")}</Label><Input value={form.linkedin} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} /></div>
         <div><Label>{t("companies.fields.notes")}</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
+        {mode === "edit" && initialData?.id ? (
+          <ExtraFieldsManager entityType="company" entityId={initialData.id} />
+        ) : (
+          <ExtraFieldsHint />
+        )}
       </div>
       <DialogFooter>
         <Button onClick={save} disabled={saving}>{t("common.save")}</Button>

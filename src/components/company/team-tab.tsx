@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Plus, Pencil, Archive as ArchiveIcon, UserRound, Mail, Phone, Briefcase } from "lucide-react";
+import { Plus, Pencil, Archive as ArchiveIcon, UserRound, Mail, Phone, Briefcase, Linkedin } from "lucide-react";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/empty-state";
 import { ContactForm } from "@/components/contacts/contact-form";
@@ -72,6 +72,11 @@ export function TeamTab({ companyId }: { companyId: string }) {
                   {c.job_title && <span className="inline-flex items-center gap-1"><Briefcase className="h-3 w-3" />{c.job_title}</span>}
                   {c.phone && <span className="inline-flex items-center gap-1"><Phone className="h-3 w-3" />{c.phone}</span>}
                   {c.email && <span className="inline-flex items-center gap-1"><Mail className="h-3 w-3" />{c.email}</span>}
+                  {c.linkedin && (
+                    <a href={c.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
+                      <Linkedin className="h-3 w-3" />LinkedIn
+                    </a>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-1">
