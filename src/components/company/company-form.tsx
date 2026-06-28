@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
+import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
 
 export type CompanyFormData = {
   id?: string;
