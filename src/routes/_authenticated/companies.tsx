@@ -64,8 +64,20 @@ function CompaniesPage() {
         }
       />
       <Card className="mb-4"><CardContent className="p-3">
-        <Input placeholder={t("common.search")} value={q} onChange={(e) => setQ(e.target.value)} />
+        <div className="flex gap-2 items-center">
+          <Input className="flex-1" placeholder={t("common.search")} value={q} onChange={(e) => setQ(e.target.value)} />
+          <Select value={sectorFilter} onValueChange={setSectorFilter}>
+            <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">{t("products.allSectors")}</SelectItem>
+              {sectors.map((s) => (
+                <SelectItem key={s.id} value={s.id}>{ar ? s.name_ar : s.name_en}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardContent></Card>
+
 
       <Card>
         <Table>
