@@ -71,6 +71,10 @@ export function ContactForm({
             <Label>{t("contacts.fields.email")}</Label>
             <Input type="email" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
+          <div className="col-span-2">
+            <Label>{t("contacts.fields.linkedin")}</Label>
+            <Input value={form.linkedin ?? ""} onChange={(e) => setForm({ ...form, linkedin: e.target.value })} placeholder="https://linkedin.com/in/..." />
+          </div>
         </div>
         <div>
           <Label>{t("contacts.fields.company")}</Label>
@@ -87,6 +91,11 @@ export function ContactForm({
           <Label>{t("contacts.fields.notes")}</Label>
           <Textarea value={form.notes ?? ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} />
         </div>
+        {mode === "edit" && initialData?.id ? (
+          <ExtraFieldsManager entityType="contact" entityId={initialData.id} />
+        ) : (
+          <ExtraFieldsHint />
+        )}
       </div>
       <DialogFooter>
         <Button variant="ghost" onClick={onDone}>{t("common.cancel")}</Button>
