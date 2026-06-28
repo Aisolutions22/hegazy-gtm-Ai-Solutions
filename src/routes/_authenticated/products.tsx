@@ -123,7 +123,18 @@ function ProductsPage() {
           />
         )}
       </Dialog>
+
+      <ProductCompaniesDialog
+        productId={viewingId}
+        productName={(() => {
+          const p = products.find((x) => x.id === viewingId);
+          return p ? (ar ? p.name_ar : p.name_en) : undefined;
+        })()}
+        open={!!viewingId}
+        onOpenChange={(o) => { if (!o) setViewingId(null); }}
+      />
     </div>
+
   );
 }
 
