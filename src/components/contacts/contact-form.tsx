@@ -9,6 +9,7 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { toast } from "sonner";
 import { useSaveContact, type ContactRow } from "@/hooks/use-contacts";
 import { CompanyCombobox } from "@/components/contacts/company-combobox";
+import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
 
 export function ContactForm({
   onDone,
