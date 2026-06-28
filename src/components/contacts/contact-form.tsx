@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useSaveContact, type ContactRow } from "@/hooks/use-contacts";
 import { CompanyCombobox } from "@/components/contacts/company-combobox";
 import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
+import { normalizeUrlForStorage } from "@/lib/url";
 
 export function ContactForm({
   onDone,
