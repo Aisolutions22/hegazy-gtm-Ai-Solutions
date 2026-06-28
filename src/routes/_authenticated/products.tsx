@@ -95,9 +95,11 @@ function ProductsPage() {
                       <div className="flex items-start justify-between mb-2">
                         <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center"><Package className="h-5 w-5 text-primary" /></div>
                         <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => setViewingId(p.id)} aria-label={t("products.viewCompanies")} title={t("products.viewCompanies")}><Building2 className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="icon" onClick={() => setEditingId(p.id)} aria-label={t("common.edit")}><Pencil className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="icon" onClick={() => archive(p.id)}><ArchiveIcon className="h-4 w-4" /></Button>
                         </div>
+
                       </div>
                       <h3 className="font-semibold">{ar ? p.name_ar : p.name_en}</h3>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.description}</p>
