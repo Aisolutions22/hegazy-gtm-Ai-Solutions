@@ -31,6 +31,7 @@ export function ContactForm({
     job_title: initialData?.job_title ?? "",
     phone: initialData?.phone ?? "",
     email: initialData?.email ?? "",
+    linkedin: (initialData as { linkedin?: string | null } | undefined)?.linkedin ?? "",
     is_primary: initialData?.is_primary ?? false,
     notes: initialData?.notes ?? "",
     company_id: (initialData?.company_id ?? lockedCompanyId ?? null) as string | null,
