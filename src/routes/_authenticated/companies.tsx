@@ -26,8 +26,6 @@ type CompanyRow = CompanyFormData & { id: string; name: string; type: string; cr
 
 function CompaniesPage() {
   const { t, i18n } = useTranslation();
-  const qc = useQueryClient();
-  const { t, i18n } = useTranslation();
   const ar = i18n.language === "ar";
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -35,12 +33,16 @@ function CompaniesPage() {
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-
   const { data: companies = [] } = useCompaniesList();
   const { data: sectors = [] } = useSectors();
   const archive = useArchiveCompany();
 
-  const filtered = companies.filter((c) => c.name.toLowerCase().includes(q.toLowerCase()));
+  const filtered = companies.filter((c) => {
+    if (!c.name.toLowerCase().includes(q.toLowerCase())) return false;
+    if (sectorFilter !== "__all__" && (c as { sector_id?: string | null }).sector_id !== sectorFilter) return false;
+    return true;
+  });
+
   const editing = filtered.find((c) => c.id === editingId) ?? companies.find((c) => c.id === editingId);
 
   async function archiveCompany(id: string) {
