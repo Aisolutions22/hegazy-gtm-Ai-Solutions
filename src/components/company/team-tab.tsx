@@ -9,6 +9,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Plus, Pencil, Archive as ArchiveIcon, UserRound, Mail, Phone, Briefcase, Linkedin } from "lucide-react";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/empty-state";
+import { safeHref } from "@/lib/url";
 import { ContactForm } from "@/components/contacts/contact-form";
 import {
   useCompanyContacts, useUnassignedContacts, useArchiveContact,
