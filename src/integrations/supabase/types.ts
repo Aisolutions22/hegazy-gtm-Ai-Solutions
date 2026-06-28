@@ -254,6 +254,7 @@ export type Database = {
           id: string
           is_primary: boolean
           job_title: string | null
+          linkedin: string | null
           notes: string | null
           phone: string | null
           updated_at: string
@@ -268,6 +269,7 @@ export type Database = {
           id?: string
           is_primary?: boolean
           job_title?: string | null
+          linkedin?: string | null
           notes?: string | null
           phone?: string | null
           updated_at?: string
@@ -282,6 +284,7 @@ export type Database = {
           id?: string
           is_primary?: boolean
           job_title?: string | null
+          linkedin?: string | null
           notes?: string | null
           phone?: string | null
           updated_at?: string
@@ -295,6 +298,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      extra_fields: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          label: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          label: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
       }
       meetings: {
         Row: {
