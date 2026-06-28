@@ -293,7 +293,11 @@ const resources = {
         defaultMargin: "متوسط الهامش %",
         sectorGroupLabel: "المنتجات والمواصفات",
         otherSector: "أخرى",
+        viewCompanies: "عرض الشركات",
+        companiesUsing: "الشركات التي تستخدم هذا المنتج",
+        allSectors: "كل القطاعات",
       },
+
       contacts: {
         title: "الأشخاص",
         new: "إضافة شخص",
