@@ -378,6 +378,11 @@ const resources = {
         },
       },
       archive: { title: "الأرشيف", empty: "الأرشيف فارغ" },
+      calendar: {
+        today: "اليوم",
+        noEvents: "لا توجد مواعيد هذا اليوم",
+        kinds: { meeting: "اجتماع", task: "مهمة", opportunity: "فرصة" },
+      },
       settings: { title: "الإعدادات", profile: "الملف الشخصي", appearance: "المظهر", users: "المستخدمون", theme: "السمة", language: "اللغة", light: "فاتح", dark: "داكن" },
     },
   },
@@ -643,6 +648,11 @@ const resources = {
         actions: { created: "created", edited: "edited", archived: "archived", restored: "restored", status_changed: "changed status of" },
       },
       archive: { title: "Archive", empty: "Archive is empty" },
+      calendar: {
+        today: "Today",
+        noEvents: "No events this day",
+        kinds: { meeting: "Meeting", task: "Task", opportunity: "Opportunity" },
+      },
       settings: { title: "Settings", profile: "Profile", appearance: "Appearance", users: "Users", theme: "Theme", language: "Language", light: "Light", dark: "Dark" },
     },
   },
