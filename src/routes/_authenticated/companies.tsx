@@ -27,9 +27,14 @@ type CompanyRow = CompanyFormData & { id: string; name: string; type: string; cr
 function CompaniesPage() {
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
+  const { t, i18n } = useTranslation();
+  const ar = i18n.language === "ar";
+  const qc = useQueryClient();
   const [q, setQ] = useState("");
+  const [sectorFilter, setSectorFilter] = useState<string>("__all__");
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+
 
   const { data: companies = [] } = useCompaniesList();
   const { data: sectors = [] } = useSectors();
