@@ -77,7 +77,19 @@ function ProductsPage() {
       } />
 
       <div className="space-y-6">
-        {grouped.length === 0 && (
+        {isLoading && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={`sk-${i}`}><CardContent className="p-5 space-y-3">
+                <div className="flex justify-between"><Skeleton className="h-10 w-10 rounded-lg" /><Skeleton className="h-6 w-20" /></div>
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-1/3" />
+              </CardContent></Card>
+            ))}
+          </div>
+        )}
+        {!isLoading && grouped.length === 0 && (
           <Card><CardContent className="p-8 text-center text-muted-foreground">{t("common.empty")}</CardContent></Card>
         )}
         {grouped.map((group) => {
