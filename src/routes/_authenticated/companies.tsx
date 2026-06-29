@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { CompanyForm, type CompanyFormData } from "@/components/company/company-form";
 import { useCompaniesList, useSectors, useArchiveCompany } from "@/hooks/use-company";
 import { fmtDate } from "@/lib/format";
+import { EntityAvatar } from "@/components/shared/avatar-upload";
 
 export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
@@ -98,7 +99,12 @@ function CompaniesPage() {
             )}
             {filtered.map((c) => (
               <TableRow key={c.id}>
-                <TableCell><Link to="/companies/$id" params={{ id: c.id }} className="font-medium hover:underline">{c.name}</Link></TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <EntityAvatar name={c.name} url={(c as { logo_url?: string | null }).logo_url ?? null} size="sm" />
+                    <Link to="/companies/$id" params={{ id: c.id }} className="font-medium hover:underline">{c.name}</Link>
+                  </div>
+                </TableCell>
                 <TableCell><Badge variant={c.type === "customer" ? "default" : "secondary"}>{t(`companies.types.${c.type}`)}</Badge></TableCell>
                 <TableCell className="text-sm text-muted-foreground">{c.sector?.name_en ?? "—"}</TableCell>
                 <TableCell className="text-sm">{c.contact_person ?? "—"}</TableCell>
