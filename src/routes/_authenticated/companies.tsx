@@ -35,7 +35,7 @@ function CompaniesPage() {
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data: companies = [] } = useCompaniesList();
+  const { data: companies = [], isLoading } = useCompaniesList();
   const { data: sectors = [] } = useSectors();
   const archive = useArchiveCompany();
 
