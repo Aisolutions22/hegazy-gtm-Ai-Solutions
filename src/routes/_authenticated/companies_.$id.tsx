@@ -153,6 +153,15 @@ function Company360() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="files">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><FileText className="h-4 w-4" />{t("company360.tabs.files")}</CardTitle></CardHeader>
+            <CardContent><FilesTab companyId={id} /></CardContent>
+          </Card>
+        </TabsContent>
+
+
+
         <TabsContent value="sales">
           <Card><CardContent className="p-0">
             {sales.length === 0 ? <EmptyState icon={Briefcase} title={t("common.empty")} compact /> :
