@@ -232,7 +232,7 @@ const resources = {
         },
       },
       company360: {
-        tabs: { overview: "نظرة عامة", team: "الموظفون", products: "المنتجات", meetings: "الاجتماعات", notes: "الملاحظات" },
+        tabs: { overview: "نظرة عامة", team: "الموظفون", products: "المنتجات", files: "الملفات", meetings: "الاجتماعات", notes: "الملاحظات" },
         linkProduct: "ربط منتج",
         unlinkProduct: "إلغاء الربط",
         addNewProduct: "إضافة منتج جديد",
@@ -576,7 +576,7 @@ const resources = {
         tabs: { profile: "Profile", sales: "Sales", opportunities: "Opportunities", tasks: "Tasks", timeline: "Timeline" },
       },
       company360: {
-        tabs: { overview: "Overview", team: "Team", products: "Products", meetings: "Meetings", notes: "Notes" },
+        tabs: { overview: "Overview", team: "Team", products: "Products", files: "Files", meetings: "Meetings", notes: "Notes" },
         linkProduct: "Link product",
         unlinkProduct: "Unlink",
         addNewProduct: "Add new product",
