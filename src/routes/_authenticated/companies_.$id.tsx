@@ -52,7 +52,12 @@ function Company360() {
         <CardContent className="p-4 flex items-center gap-4">
           <EntityAvatar name={company.name} url={(company as { logo_url?: string | null }).logo_url ?? null} size="xl" />
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold truncate">{company.name}</h1>
+            <h1 className="text-xl font-bold truncate">
+              {(company as { display_number?: number | null }).display_number != null && (
+                <span className="text-muted-foreground font-normal me-1">#{(company as { display_number?: number | null }).display_number}</span>
+              )}
+              {company.name}
+            </h1>
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-muted-foreground">
               <Badge variant={company.type === "customer" ? "default" : "secondary"} className="text-[10px]">
                 {t(`companies.types.${company.type}`)}
