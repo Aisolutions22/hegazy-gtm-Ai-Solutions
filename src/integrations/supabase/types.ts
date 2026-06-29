@@ -77,6 +77,7 @@ export type Database = {
           contact_person: string | null
           created_at: string
           created_by: string | null
+          display_number: number
           email: string | null
           icp_accessibility: number
           icp_consumption: number
@@ -104,6 +105,7 @@ export type Database = {
           contact_person?: string | null
           created_at?: string
           created_by?: string | null
+          display_number?: number
           email?: string | null
           icp_accessibility?: number
           icp_consumption?: number
@@ -131,6 +133,7 @@ export type Database = {
           contact_person?: string | null
           created_at?: string
           created_by?: string | null
+          display_number?: number
           email?: string | null
           icp_accessibility?: number
           icp_consumption?: number
@@ -159,6 +162,47 @@ export type Database = {
             columns: ["sector_id"]
             isOneToOne: false
             referencedRelation: "sectors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_documents: {
+        Row: {
+          archived_at: string | null
+          company_id: string
+          created_at: string
+          created_by: string | null
+          display_name: string
+          drive_url: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          drive_url: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          drive_url?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -250,6 +294,7 @@ export type Database = {
           company_id: string | null
           created_at: string
           created_by: string | null
+          display_number: number
           email: string | null
           full_name: string
           id: string
@@ -266,6 +311,7 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           created_by?: string | null
+          display_number?: number
           email?: string | null
           full_name: string
           id?: string
@@ -282,6 +328,7 @@ export type Database = {
           company_id?: string | null
           created_at?: string
           created_by?: string | null
+          display_number?: number
           email?: string | null
           full_name?: string
           id?: string
@@ -497,6 +544,7 @@ export type Database = {
           created_at: string
           default_margin: number | null
           description: string | null
+          display_number: number
           id: string
           name_ar: string
           name_en: string
@@ -509,6 +557,7 @@ export type Database = {
           created_at?: string
           default_margin?: number | null
           description?: string | null
+          display_number?: number
           id?: string
           name_ar: string
           name_en: string
@@ -521,6 +570,7 @@ export type Database = {
           created_at?: string
           default_margin?: number | null
           description?: string | null
+          display_number?: number
           id?: string
           name_ar?: string
           name_en?: string
@@ -645,6 +695,7 @@ export type Database = {
         Row: {
           archived_at: string | null
           created_at: string
+          display_number: number
           id: string
           name_ar: string
           name_en: string
@@ -653,6 +704,7 @@ export type Database = {
         Insert: {
           archived_at?: string | null
           created_at?: string
+          display_number?: number
           id?: string
           name_ar: string
           name_en: string
@@ -661,6 +713,7 @@ export type Database = {
         Update: {
           archived_at?: string | null
           created_at?: string
+          display_number?: number
           id?: string
           name_ar?: string
           name_en?: string
