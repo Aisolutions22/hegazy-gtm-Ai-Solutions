@@ -90,8 +90,8 @@ function SettingsPage() {
             <div>
               <div className="text-sm font-medium mb-2">{t("settings.language")}</div>
               <div className="flex gap-2">
-                <Button variant={i18n.language === "ar" ? "default" : "outline"} onClick={() => setLocale("ar")}>عربي</Button>
-                <Button variant={i18n.language === "en" ? "default" : "outline"} onClick={() => setLocale("en")}>English</Button>
+                <Button variant={i18n.language === "ar" ? "default" : "outline"} onClick={() => setLocale("ar")}>{"\n"}</Button>
+                <Button variant={i18n.language === "en" ? "default" : "outline"} onClick={() => setLocale("en")}>{"\n"}</Button>
               </div>
             </div>
           </CardContent></Card>
