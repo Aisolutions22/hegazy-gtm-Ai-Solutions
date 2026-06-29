@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EntityAvatar } from "@/components/shared/avatar-upload";
 import { Dialog } from "@/components/ui/dialog";
 import { fmtCurrency, fmtMonth } from "@/lib/format";
-import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package } from "lucide-react";
+import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package, FileText } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import {
   useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks, useSectors,
@@ -22,6 +22,7 @@ import { MeetingsList } from "@/components/company/meetings-list";
 import { CompanyForm } from "@/components/company/company-form";
 import { TeamTab } from "@/components/company/team-tab";
 import { ProductsTab } from "@/components/company/products-tab";
+import { FilesTab } from "@/components/company/files-tab";
 
 export const Route = createFileRoute("/_authenticated/companies_/$id")({
   component: Company360,
@@ -101,6 +102,7 @@ function Company360() {
           <TabsTrigger value="overview">{t("company360.tabs.overview")}</TabsTrigger>
           <TabsTrigger value="team"><Users className="h-3.5 w-3.5 me-1" />{t("company360.tabs.team")}</TabsTrigger>
           <TabsTrigger value="products"><Package className="h-3.5 w-3.5 me-1" />{t("company360.tabs.products")}</TabsTrigger>
+          <TabsTrigger value="files"><FileText className="h-3.5 w-3.5 me-1" />{t("company360.tabs.files")}</TabsTrigger>
           <TabsTrigger value="sales">{t("companies.tabs.sales")}</TabsTrigger>
           <TabsTrigger value="opportunities">{t("companies.tabs.opportunities")}</TabsTrigger>
           <TabsTrigger value="tasks">{t("companies.tabs.tasks")}</TabsTrigger>
