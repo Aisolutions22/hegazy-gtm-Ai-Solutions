@@ -36,7 +36,7 @@ function CalendarPage() {
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const [selected, setSelected] = useState<Date | null>(null);
 
-  const { data: events = [] } = useCalendarEvents(month);
+  const { data: events = [], isLoading } = useCalendarEvents(month);
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
