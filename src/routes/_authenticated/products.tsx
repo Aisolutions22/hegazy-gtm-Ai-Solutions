@@ -116,7 +116,12 @@ function ProductsPage() {
                         </div>
 
                       </div>
-                      <h3 className="font-semibold">{ar ? p.name_ar : p.name_en}</h3>
+                      <h3 className="font-semibold">
+                        {(p as { display_number?: number | null }).display_number != null && (
+                          <span className="text-muted-foreground font-normal me-1">#{(p as { display_number?: number | null }).display_number}</span>
+                        )}
+                        {ar ? p.name_ar : p.name_en}
+                      </h3>
                       {p.specialty && (
                         <div className="mt-0.5 text-xs text-muted-foreground italic">{p.specialty}</div>
                       )}
