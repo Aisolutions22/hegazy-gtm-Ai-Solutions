@@ -659,9 +659,11 @@ const resources = {
         upload: "Upload",
         change: "Change",
         remove: "Remove",
-        tooLarge: "Image too large (max 4MB)",
+        tooLarge: "Image too large (max 8MB)",
         invalidType: "Image files only",
         hintCreate: "Save first, then upload an image.",
+        cropTitle: "Crop image",
+        zoom: "Zoom",
       },
       contacts: {
         title: "Contacts",
