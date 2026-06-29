@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Archive as ArchiveIcon, Package, Pencil, Building2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCompaniesDialog } from "@/components/products/product-companies-dialog";
 
 import { toast } from "sonner";
