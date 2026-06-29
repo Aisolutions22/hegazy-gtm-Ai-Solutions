@@ -11,6 +11,8 @@ import { useSaveContact, type ContactRow } from "@/hooks/use-contacts";
 import { CompanyCombobox } from "@/components/contacts/company-combobox";
 import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
 import { normalizeUrlForStorage } from "@/lib/url";
+import { AvatarUpload } from "@/components/shared/avatar-upload";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function ContactForm({
   onDone,
@@ -26,6 +28,7 @@ export function ContactForm({
 }) {
   const { t } = useTranslation();
   const save = useSaveContact();
+  const qc = useQueryClient();
 
   const [form, setForm] = useState({
     full_name: initialData?.full_name ?? "",
@@ -37,6 +40,7 @@ export function ContactForm({
     notes: initialData?.notes ?? "",
     company_id: (initialData?.company_id ?? lockedCompanyId ?? null) as string | null,
   });
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(initialData?.avatar_url ?? null);
 
   async function onSave() {
     if (!form.full_name.trim()) { toast.error(t("contacts.validation.nameRequired")); return; }
@@ -62,6 +66,19 @@ export function ContactForm({
         <DialogTitle>{mode === "edit" ? t("common.edit") : t("contacts.new")}</DialogTitle>
       </DialogHeader>
       <div className="space-y-3">
+        {mode === "edit" && initialData?.id ? (
+          <AvatarUpload
+            name={form.full_name}
+            url={avatarUrl}
+            pathPrefix={`contacts/${initialData.id}`}
+            table="contacts"
+            column="avatar_url"
+            rowId={initialData.id}
+            onChanged={(u) => { setAvatarUrl(u); qc.invalidateQueries({ queryKey: ["contacts"] }); if (form.company_id) qc.invalidateQueries({ queryKey: ["contacts", "by-company", form.company_id] }); }}
+          />
+        ) : (
+          <p className="text-xs text-muted-foreground">{t("avatar.hintCreate")}</p>
+        )}
         <div>
           <Label>{t("contacts.fields.fullName")}</Label>
           <Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />

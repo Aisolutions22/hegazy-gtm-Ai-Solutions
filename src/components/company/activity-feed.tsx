@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCompanyActivity } from "@/hooks/use-company";
 import { EmptyState } from "@/components/empty-state";
-import { fmtDate } from "@/lib/format";
+import { fmtDateTime } from "@/lib/format";
 import { Activity, Circle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -31,7 +31,7 @@ export function ActivityFeed({ companyId }: { companyId: string }) {
                     <Badge variant="outline" className="text-[10px]">{a.entity_type}</Badge>
                     <span className="text-xs">{t(`activity.actions.${a.action}`)}</span>
                   </div>
-                  <div className="text-[11px] text-muted-foreground mt-0.5">{fmtDate(a.created_at, i18n.language)}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{fmtDateTime(a.created_at, i18n.language)}</div>
                 </li>
               ))}
             </ol>
