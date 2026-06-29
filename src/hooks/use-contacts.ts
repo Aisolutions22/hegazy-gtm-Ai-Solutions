@@ -12,6 +12,7 @@ export type ContactRow = {
   linkedin: string | null;
   is_primary: boolean;
   notes: string | null;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
   archived_at: string | null;
