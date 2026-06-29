@@ -101,6 +101,13 @@ function CalendarPage() {
             ))}
           </div>
 
+          {isLoading ? (
+            <div className="grid grid-cols-7 gap-1">
+              {Array.from({ length: 42 }).map((_, i) => (
+                <Skeleton key={i} className="min-h-[88px] rounded-md" />
+              ))}
+            </div>
+          ) : (
           <div className="grid grid-cols-7 gap-1">
             {gridDays.map((day) => {
               const iso = format(day, "yyyy-MM-dd");
