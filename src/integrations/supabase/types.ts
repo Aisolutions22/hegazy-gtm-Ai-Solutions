@@ -246,6 +246,7 @@ export type Database = {
       contacts: {
         Row: {
           archived_at: string | null
+          avatar_url: string | null
           company_id: string | null
           created_at: string
           created_by: string | null
@@ -261,6 +262,7 @@ export type Database = {
         }
         Insert: {
           archived_at?: string | null
+          avatar_url?: string | null
           company_id?: string | null
           created_at?: string
           created_by?: string | null
@@ -276,6 +278,7 @@ export type Database = {
         }
         Update: {
           archived_at?: string | null
+          avatar_url?: string | null
           company_id?: string | null
           created_at?: string
           created_by?: string | null
@@ -498,6 +501,7 @@ export type Database = {
           name_ar: string
           name_en: string
           sector_id: string | null
+          specialty: string | null
           updated_at: string
         }
         Insert: {
@@ -509,6 +513,7 @@ export type Database = {
           name_ar: string
           name_en: string
           sector_id?: string | null
+          specialty?: string | null
           updated_at?: string
         }
         Update: {
@@ -520,6 +525,7 @@ export type Database = {
           name_ar?: string
           name_en?: string
           sector_id?: string | null
+          specialty?: string | null
           updated_at?: string
         }
         Relationships: [

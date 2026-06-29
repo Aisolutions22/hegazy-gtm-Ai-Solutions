@@ -30,6 +30,18 @@ export function fmtDate(d: string | Date | null | undefined, locale = "en") {
   }).format(date);
 }
 
+export function fmtDateTime(d: string | Date | null | undefined, locale = "en") {
+  if (!d) return "—";
+  const date = typeof d === "string" ? new Date(d) : d;
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
 export function fmtMonth(d: string | Date | null | undefined, locale = "en") {
   if (!d) return "—";
   const date = typeof d === "string" ? new Date(d) : d;

@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { ExtraFieldsManager, ExtraFieldsHint } from "@/components/shared/extra-fields-manager";
 import { normalizeUrlForStorage } from "@/lib/url";
+import { SectorCombobox } from "@/components/shared/sector-combobox";
+import { AvatarUpload } from "@/components/shared/avatar-upload";
 
 export type CompanyFormData = {
   id?: string;
@@ -25,6 +27,7 @@ export type CompanyFormData = {
   linkedin?: string | null;
   location?: string | null;
   notes?: string | null;
+  logo_url?: string | null;
 };
 
 export function CompanyForm({
@@ -43,7 +46,7 @@ export function CompanyForm({
   const [form, setForm] = useState({
     name: initialData?.name ?? "",
     type: initialData?.type ?? "target",
-    sector_id: initialData?.sector_id ?? "",
+    sector_id: (initialData?.sector_id ?? null) as string | null,
     contact_person: initialData?.contact_person ?? "",
     phone: initialData?.phone ?? "",
     email: initialData?.email ?? "",
@@ -52,6 +55,7 @@ export function CompanyForm({
     location: initialData?.location ?? "",
     notes: initialData?.notes ?? "",
   });
+  const [logoUrl, setLogoUrl] = useState<string | null>(initialData?.logo_url ?? null);
   const [saving, setSaving] = useState(false);
 
   async function save() {
@@ -67,7 +71,7 @@ export function CompanyForm({
     }
     setSaving(true);
     const payload: Record<string, unknown> = { ...form, website, linkedin };
-    if (!payload.sector_id) delete payload.sector_id;
+    if (!payload.sector_id) payload.sector_id = null;
     if (mode === "edit" && initialData?.id) {
       const { error } = await supabase.from("companies").update(payload as never).eq("id", initialData.id);
       setSaving(false);
@@ -90,6 +94,19 @@ export function CompanyForm({
     <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
       <DialogHeader><DialogTitle>{mode === "edit" ? t("common.edit") : t("companies.new")}</DialogTitle></DialogHeader>
       <div className="space-y-3">
+        {mode === "edit" && initialData?.id ? (
+          <AvatarUpload
+            name={form.name}
+            url={logoUrl}
+            pathPrefix={`companies/${initialData.id}`}
+            table="companies"
+            column="logo_url"
+            rowId={initialData.id}
+            onChanged={(u) => { setLogoUrl(u); qc.invalidateQueries({ queryKey: ["companies"] }); qc.invalidateQueries({ queryKey: ["company", initialData.id] }); }}
+          />
+        ) : (
+          <p className="text-xs text-muted-foreground">{t("avatar.hintCreate")}</p>
+        )}
         <div><Label>{t("companies.fields.name")}</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -105,10 +122,7 @@ export function CompanyForm({
           </div>
           <div>
             <Label>{t("companies.fields.sector")}</Label>
-            <Select value={form.sector_id} onValueChange={(v) => setForm({ ...form, sector_id: v })}>
-              <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
-              <SelectContent>{sectors.map((s) => <SelectItem key={s.id} value={s.id}>{s.name_en}</SelectItem>)}</SelectContent>
-            </Select>
+            <SectorCombobox sectors={sectors} value={form.sector_id} onChange={(id) => setForm({ ...form, sector_id: id })} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">

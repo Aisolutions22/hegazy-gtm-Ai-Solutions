@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent } from "@/components/ui/card";
-import { fmtDate } from "@/lib/format";
+import { fmtDateTime } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/activity")({ component: ActivityPage });
@@ -27,7 +27,7 @@ function ActivityPage() {
                 <Badge variant="outline" className="text-[10px]">{a.entity_type}</Badge>
                 <span>{t(`activity.actions.${a.action}`)}</span>
               </div>
-              <span className="text-xs text-muted-foreground">{fmtDate(a.created_at, i18n.language)}</span>
+              <span className="text-xs text-muted-foreground">{fmtDateTime(a.created_at, i18n.language)}</span>
             </div>
           ))}
         </div>

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useCompanyMeetings } from "@/hooks/use-company";
 import { EmptyState } from "@/components/empty-state";
 import { CalendarDays, Users } from "lucide-react";
-import { fmtDate } from "@/lib/format";
+import { fmtDateTime } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 
 export function MeetingsList({ companyId, limit }: { companyId: string; limit?: number }) {
@@ -17,7 +17,8 @@ export function MeetingsList({ companyId, limit }: { companyId: string; limit?: 
           <div className="flex items-start justify-between gap-2">
             <div>
               <div className="font-medium text-sm">{m.title}</div>
-              <div className="text-[11px] text-muted-foreground mt-0.5">{fmtDate(m.meeting_date, i18n.language)}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{fmtDateTime(m.meeting_date, i18n.language)}</div>
+              <div className="text-[10px] text-muted-foreground mt-0.5">{t("common.createdAt") || "Created"}: {fmtDateTime(m.created_at, i18n.language)}</div>
             </div>
             {m.attendees?.length > 0 && (
               <Badge variant="outline" className="text-[10px] gap-1"><Users className="h-3 w-3" />{m.attendees.length}</Badge>

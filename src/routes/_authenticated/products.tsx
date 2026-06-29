@@ -17,6 +17,7 @@ import { ProductCompaniesDialog } from "@/components/products/product-companies-
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { useSectors } from "@/hooks/use-company";
+import { SectorCombobox } from "@/components/shared/sector-combobox";
 
 export const Route = createFileRoute("/_authenticated/products")({ component: ProductsPage });
 
@@ -25,6 +26,7 @@ type ProductRow = {
   name_en: string;
   name_ar: string;
   description?: string | null;
+  specialty?: string | null;
   default_margin: number | string;
   sector_id?: string | null;
 };
@@ -102,6 +104,9 @@ function ProductsPage() {
 
                       </div>
                       <h3 className="font-semibold">{ar ? p.name_ar : p.name_en}</h3>
+                      {p.specialty && (
+                        <div className="mt-0.5 text-xs text-muted-foreground italic">{p.specialty}</div>
+                      )}
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.description}</p>
                       <div className="mt-3 text-xs"><span className="text-muted-foreground">{t("products.defaultMargin")}: </span><span className="font-semibold">{Number(p.default_margin)}%</span></div>
                     </CardContent>
@@ -149,14 +154,14 @@ function ProductForm({
   initialData?: ProductRow;
   sectors: Sector[];
 }) {
-  const { t, i18n } = useTranslation();
-  const ar = i18n.language === "ar";
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     name_en: initialData?.name_en ?? "",
     name_ar: initialData?.name_ar ?? "",
+    specialty: initialData?.specialty ?? "",
     description: initialData?.description ?? "",
     default_margin: Number(initialData?.default_margin ?? 10),
-    sector_id: initialData?.sector_id ?? "",
+    sector_id: (initialData?.sector_id ?? null) as string | null,
   });
   async function save() {
     if (!form.name_en.trim() || !form.name_ar.trim()) { toast.error("Name required"); return; }
@@ -181,16 +186,12 @@ function ProductForm({
         <div><Label>Name (EN)</Label><Input value={form.name_en} onChange={(e) => setForm({ ...form, name_en: e.target.value })} /></div>
         <div><Label>الاسم (AR)</Label><Input value={form.name_ar} onChange={(e) => setForm({ ...form, name_ar: e.target.value })} /></div>
         <div>
+          <Label>{t("products.specialty")}</Label>
+          <Input value={form.specialty ?? ""} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder={t("products.specialtyPlaceholder")} />
+        </div>
+        <div>
           <Label>{t("common.sector")}</Label>
-          <Select value={form.sector_id || "__none__"} onValueChange={(v) => setForm({ ...form, sector_id: v === "__none__" ? "" : v })}>
-            <SelectTrigger><SelectValue placeholder="—" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__none__">—</SelectItem>
-              {sectors.map((s) => (
-                <SelectItem key={s.id} value={s.id}>{ar ? s.name_ar : s.name_en}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SectorCombobox sectors={sectors} value={form.sector_id} onChange={(id) => setForm({ ...form, sector_id: id })} />
         </div>
         <div><Label>{t("products.defaultMargin")}</Label><Input type="number" value={form.default_margin} onChange={(e) => setForm({ ...form, default_margin: Number(e.target.value) })} /></div>
         <div><Label>Description</Label><Textarea value={form.description ?? ""} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
