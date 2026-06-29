@@ -109,9 +109,9 @@ function AuthPage() {
               {mode === "signin" ? t("auth.switchToSignUp") : t("auth.switchToSignIn")}
             </button>
             <div className="flex justify-center gap-3 pt-2 text-xs">
-              <button type="button" className={i18n.language === "ar" ? "font-bold" : "text-muted-foreground"} onClick={() => setLocale("ar")}>عربي</button>
-              <span className="text-muted-foreground">·</span>
-              <button type="button" className={i18n.language === "en" ? "font-bold" : "text-muted-foreground"} onClick={() => setLocale("en")}>English</button>
+              <button type="button" className={i18n.language === "ar" ? "font-bold" : "text-muted-foreground"} onClick={() => setLocale("ar")}>{"\n"}</button>
+              <span className="text-muted-foreground">{"\n"}</span>
+              <button type="button" className={i18n.language === "en" ? "font-bold" : "text-muted-foreground"} onClick={() => setLocale("en")}>{"\n"}</button>
             </div>
           </form>
         </CardContent>
