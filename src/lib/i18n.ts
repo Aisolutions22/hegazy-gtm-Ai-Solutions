@@ -16,7 +16,7 @@ const resources = {
         fullName: "الاسم الكامل",
         signInCta: "دخول",
         signUpCta: "إنشاء",
-        switchToSignUp: "ليس لديك حساب؟ سجل الآن",
+        switchToSignUp: "GTM - Ai growth engine",
         switchToSignIn: "لديك حساب؟ سجل دخول",
         signOut: "تسجيل خروج",
         invalidCreds: "بيانات الدخول غير صحيحة",
