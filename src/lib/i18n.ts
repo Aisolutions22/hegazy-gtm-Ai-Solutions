@@ -16,7 +16,7 @@ const resources = {
         fullName: "الاسم الكامل",
         signInCta: "دخول",
         signUpCta: "إنشاء",
-        switchToSignUp: "ليس لديك حساب؟ سجل الآن",
+        switchToSignUp: "GTM - Ai growth engine",
         switchToSignIn: "لديك حساب؟ سجل دخول",
         signOut: "تسجيل خروج",
         invalidCreds: "بيانات الدخول غير صحيحة",
@@ -427,7 +427,7 @@ const resources = {
       auth: {
         signIn: "Sign In", signUp: "Sign Up", email: "Email", password: "Password", fullName: "Full Name",
         signInCta: "Sign In", signUpCta: "Create Account",
-        switchToSignUp: "No account? Sign up", switchToSignIn: "Have an account? Sign in",
+        switchToSignUp: "GTM - Ai growth engine", switchToSignIn: "Have an account? Sign in",
         signOut: "Sign Out", invalidCreds: "Invalid credentials", accountCreated: "Account created successfully",
       },
       nav: {
