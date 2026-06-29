@@ -28,7 +28,7 @@ function OppPage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
 
-  const { data: opps = [] } = useOpportunities();
+  const { data: opps = [], isLoading } = useOpportunities();
   const { data: companies = [] } = useAllCompaniesLite();
   const { data: products = [] } = useAllProductsLite();
   const moveStageMut = useMoveOpportunityStage();
