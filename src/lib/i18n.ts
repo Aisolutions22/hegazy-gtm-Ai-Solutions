@@ -561,7 +561,7 @@ const resources = {
         },
       },
       navGroups: {
-        gtm: "GTM", revenue: "Revenue", execution: "Execution",
+        gtm: "GTM", crm: "CRM", sales: "Sales", execution: "Execution",
         intelligence: "Intelligence", system: "System",
       },
       commandPalette: {
