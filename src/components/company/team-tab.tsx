@@ -7,6 +7,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Plus, Pencil, Archive as ArchiveIcon, UserRound, Mail, Phone, Briefcase, Linkedin } from "lucide-react";
+import { EntityAvatar } from "@/components/shared/avatar-upload";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/empty-state";
 import { safeHref } from "@/lib/url";
@@ -61,9 +62,7 @@ export function TeamTab({ companyId }: { companyId: string }) {
         <div className="divide-y border rounded-md bg-card">
           {sorted.map((c) => (
             <div key={c.id} className="p-3 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <UserRound className="h-4 w-4 text-primary" />
-              </div>
+              <EntityAvatar name={c.full_name} url={c.avatar_url ?? null} size="md" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-medium truncate">{c.full_name}</span>
