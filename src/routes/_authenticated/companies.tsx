@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/companies")({
   component: CompaniesPage,
 });
 
-type CompanyRow = CompanyFormData & { id: string; name: string; type: string; created_at?: string };
+type CompanyRow = CompanyFormData & { id: string; name: string; type: string; created_at?: string; display_number?: number | null };
 
 
 function CompaniesPage() {
@@ -114,7 +114,10 @@ function CompaniesPage() {
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <EntityAvatar name={c.name} url={(c as { logo_url?: string | null }).logo_url ?? null} size="sm" />
-                    <Link to="/companies/$id" params={{ id: c.id }} className="font-medium hover:underline">{c.name}</Link>
+                    <Link to="/companies/$id" params={{ id: c.id }} className="font-medium hover:underline">
+                      {c.display_number != null && <span className="text-muted-foreground font-normal me-1">#{c.display_number}</span>}
+                      {c.name}
+                    </Link>
                   </div>
                 </TableCell>
                 <TableCell><Badge variant={c.type === "customer" ? "default" : "secondary"}>{t(`companies.types.${c.type}`)}</Badge></TableCell>

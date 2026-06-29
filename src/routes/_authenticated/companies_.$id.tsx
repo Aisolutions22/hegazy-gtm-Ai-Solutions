@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EntityAvatar } from "@/components/shared/avatar-upload";
 import { Dialog } from "@/components/ui/dialog";
 import { fmtCurrency, fmtMonth } from "@/lib/format";
-import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package } from "lucide-react";
+import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package, FileText } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import {
   useCompany, useCompanyOpportunities, useCompanySales, useCompanyTasks, useSectors,
@@ -22,6 +22,7 @@ import { MeetingsList } from "@/components/company/meetings-list";
 import { CompanyForm } from "@/components/company/company-form";
 import { TeamTab } from "@/components/company/team-tab";
 import { ProductsTab } from "@/components/company/products-tab";
+import { FilesTab } from "@/components/company/files-tab";
 
 export const Route = createFileRoute("/_authenticated/companies_/$id")({
   component: Company360,
@@ -52,7 +53,12 @@ function Company360() {
         <CardContent className="p-4 flex items-center gap-4">
           <EntityAvatar name={company.name} url={(company as { logo_url?: string | null }).logo_url ?? null} size="xl" />
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold truncate">{company.name}</h1>
+            <h1 className="text-xl font-bold truncate">
+              {(company as { display_number?: number | null }).display_number != null && (
+                <span className="text-muted-foreground font-normal me-1">#{(company as { display_number?: number | null }).display_number}</span>
+              )}
+              {company.name}
+            </h1>
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-muted-foreground">
               <Badge variant={company.type === "customer" ? "default" : "secondary"} className="text-[10px]">
                 {t(`companies.types.${company.type}`)}
@@ -96,6 +102,7 @@ function Company360() {
           <TabsTrigger value="overview">{t("company360.tabs.overview")}</TabsTrigger>
           <TabsTrigger value="team"><Users className="h-3.5 w-3.5 me-1" />{t("company360.tabs.team")}</TabsTrigger>
           <TabsTrigger value="products"><Package className="h-3.5 w-3.5 me-1" />{t("company360.tabs.products")}</TabsTrigger>
+          <TabsTrigger value="files"><FileText className="h-3.5 w-3.5 me-1" />{t("company360.tabs.files")}</TabsTrigger>
           <TabsTrigger value="sales">{t("companies.tabs.sales")}</TabsTrigger>
           <TabsTrigger value="opportunities">{t("companies.tabs.opportunities")}</TabsTrigger>
           <TabsTrigger value="tasks">{t("companies.tabs.tasks")}</TabsTrigger>
@@ -145,6 +152,15 @@ function Company360() {
             <CardContent><ProductsTab companyId={id} /></CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="files">
+          <Card>
+            <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-2"><FileText className="h-4 w-4" />{t("company360.tabs.files")}</CardTitle></CardHeader>
+            <CardContent><FilesTab companyId={id} /></CardContent>
+          </Card>
+        </TabsContent>
+
+
 
         <TabsContent value="sales">
           <Card><CardContent className="p-0">

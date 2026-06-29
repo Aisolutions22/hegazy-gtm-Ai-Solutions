@@ -102,7 +102,12 @@ function SectorsPage() {
                 ) : (
                   <>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm truncate">{ar ? s.name_ar : s.name_en}</div>
+                      <div className="font-medium text-sm truncate">
+                        {(s as { display_number?: number | null }).display_number != null && (
+                          <span className="text-muted-foreground font-normal me-1">#{(s as { display_number?: number | null }).display_number}</span>
+                        )}
+                        {ar ? s.name_ar : s.name_en}
+                      </div>
                       <div className="text-xs text-muted-foreground truncate">{ar ? s.name_en : s.name_ar}</div>
                     </div>
                     <Button variant="ghost" size="icon" onClick={() => startEdit(s)} aria-label={t("common.edit")}><Pencil className="h-4 w-4" /></Button>

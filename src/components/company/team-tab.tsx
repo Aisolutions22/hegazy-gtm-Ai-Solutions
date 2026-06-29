@@ -65,6 +65,9 @@ export function TeamTab({ companyId }: { companyId: string }) {
               <EntityAvatar name={c.full_name} url={c.avatar_url ?? null} size="md" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
+                  {(c as { display_number?: number | null }).display_number != null && (
+                    <span className="text-xs text-muted-foreground font-normal">#{(c as { display_number?: number | null }).display_number}</span>
+                  )}
                   <span className="font-medium truncate">{c.full_name}</span>
                   {c.is_primary && <Badge variant="secondary" className="text-[9px]">{t("contacts.primary")}</Badge>}
                 </div>

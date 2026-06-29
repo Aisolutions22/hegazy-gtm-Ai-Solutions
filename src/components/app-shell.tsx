@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { CommandPalette } from "@/components/command-palette";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EntityAvatar } from "@/components/shared/avatar-upload";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -21,6 +21,7 @@ import {
 import { setLocale } from "@/lib/i18n";
 import { getTheme, setTheme } from "@/lib/theme";
 import { useAuth } from "@/lib/auth-context";
+import { useMyProfile } from "@/hooks/use-my-profile";
 import { useEffect, useState } from "react";
 
 const navGroups = (t: (k: string) => string) => [
@@ -138,7 +139,7 @@ function Topbar() {
   };
   const toggleLocale = () => setLocale(i18n.language === "ar" ? "en" : "ar");
 
-  const initial = (user?.email ?? "U").substring(0, 1).toUpperCase();
+  const { data: profile } = useMyProfile();
   const isMac = typeof navigator !== "undefined" && /Mac/i.test(navigator.platform);
 
   return (
@@ -164,13 +165,15 @@ function Topbar() {
         <Button variant="ghost" size="icon" title="Notifications"><Bell className="h-4 w-4" /></Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="gap-2 px-2">
-              <Avatar className="h-7 w-7"><AvatarFallback>{initial}</AvatarFallback></Avatar>
-              <span className="hidden sm:inline text-xs text-muted-foreground capitalize">{role ?? "—"}</span>
+            <Button variant="ghost" className="p-1 h-auto rounded-full">
+              <EntityAvatar name={profile?.full_name ?? user?.email ?? null} url={profile?.avatar_url ?? null} size="sm" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="text-xs">{user?.email}</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-60">
+            <DropdownMenuLabel className="flex flex-col gap-0.5">
+              <span className="text-xs truncate">{user?.email}</span>
+              {role && <span className="text-[10px] text-muted-foreground capitalize font-normal">{role}</span>}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}><Settings className="h-4 w-4 me-2" />{t("nav.settings")}</DropdownMenuItem>
             <DropdownMenuItem onClick={async () => { await signOut(); navigate({ to: "/auth" }); }}>
