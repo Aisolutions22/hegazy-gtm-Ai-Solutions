@@ -63,7 +63,7 @@ function SettingsPage() {
           <Card><CardContent className="p-6 space-y-6">
             {user && (
               <AvatarUpload
-                name={profile?.full_name ?? user.email}
+                name={profile?.full_name ?? user.email ?? ""}
                 url={profile?.avatar_url ?? null}
                 pathPrefix={`profiles/${user.id}`}
                 table="profiles"
@@ -103,13 +103,13 @@ function SettingsPage() {
           <Card><CardContent className="p-0">
             <div className="divide-y">{users.map((u) => (
               <div key={u.id} className="p-3 flex items-center gap-3 text-sm">
-                <EntityAvatar name={u.full_name ?? u.email} url={u.avatar_url ?? null} size="md" />
+                <EntityAvatar name={u.full_name ?? u.email ?? ""} url={u.avatar_url ?? null} size="md" />
                 <div className="flex-1 min-w-0">
                   <div className="font-medium truncate">{u.full_name ?? u.email}</div>
                   <div className="text-xs text-muted-foreground truncate">{u.email}</div>
                 </div>
                 <Badge variant={u.role === "owner" ? "default" : "secondary"}>{u.role ?? "—"}</Badge>
-                {isStaff && <ResetPasswordButton userId={u.id} userName={u.full_name ?? u.email} />}
+                {isStaff && <ResetPasswordButton userId={u.id} userName={u.full_name ?? u.email ?? ""} />}
               </div>
             ))}</div>
           </CardContent></Card>
