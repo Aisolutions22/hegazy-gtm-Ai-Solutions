@@ -55,7 +55,6 @@ function SettingsPage() {
           <TabsTrigger value="profile">{t("settings.profile")}</TabsTrigger>
           <TabsTrigger value="appearance">{t("settings.appearance")}</TabsTrigger>
           <TabsTrigger value="users">{t("settings.users")}</TabsTrigger>
-          {isStaff && <TabsTrigger value="sectors">{t("settings.sectors")}</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="profile">
@@ -113,12 +112,6 @@ function SettingsPage() {
             ))}</div>
           </CardContent></Card>
         </TabsContent>
-
-        {isStaff && (
-          <TabsContent value="sectors">
-            <SectorsManager />
-          </TabsContent>
-        )}
       </Tabs>
     </div>
   );
