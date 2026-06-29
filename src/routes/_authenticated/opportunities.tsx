@@ -57,8 +57,15 @@ function OppPage() {
                 <Badge variant="secondary" className="text-[10px]">{items.length}</Badge>
               </div>
               <div className="space-y-2">
+                {isLoading && Array.from({ length: 2 }).map((_, i) => (
+                  <Card key={`sk-${stage}-${i}`}><CardContent className="p-3 space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                    <Skeleton className="h-4 w-1/3" />
+                  </CardContent></Card>
+                ))}
                 {items.map((o) => (
-                  <Card key={o.id} className="hover:shadow-md transition">
+                  <Card key={o.id} className="transition-shadow duration-200 hover:shadow-md focus-within:ring-2 focus-within:ring-ring">
                     <CardContent className="p-3 space-y-2">
                       <div className="text-sm font-medium">{o.title || o.company?.name}</div>
                       <div className="text-xs text-muted-foreground">{o.company?.name}{o.product ? ` · ${o.product.name_en}` : ""}</div>
