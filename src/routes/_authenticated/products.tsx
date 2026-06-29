@@ -17,6 +17,7 @@ import { ProductCompaniesDialog } from "@/components/products/product-companies-
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 import { useSectors } from "@/hooks/use-company";
+import { SectorCombobox } from "@/components/shared/sector-combobox";
 
 export const Route = createFileRoute("/_authenticated/products")({ component: ProductsPage });
 
