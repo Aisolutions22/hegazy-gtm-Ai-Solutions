@@ -91,6 +91,9 @@ function ContactsPage() {
                 <TableCell className="font-medium">
                   <div className="flex items-center gap-2">
                     <EntityAvatar name={c.full_name} url={c.avatar_url ?? null} size="sm" />
+                    {(c as { display_number?: number | null }).display_number != null && (
+                      <span className="text-muted-foreground font-normal">#{(c as { display_number?: number | null }).display_number}</span>
+                    )}
                     <span>{c.full_name}</span>
                     {c.is_primary && <Badge variant="secondary" className="text-[9px]">{t("contacts.primary")}</Badge>}
                   </div>
