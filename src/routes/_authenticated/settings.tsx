@@ -15,9 +15,8 @@ import { getTheme, setTheme } from "@/lib/theme";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AvatarUpload, EntityAvatar } from "@/components/shared/avatar-upload";
-import { useSectors } from "@/hooks/use-company";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, KeyRound } from "lucide-react";
+import { KeyRound } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/settings")({ component: SettingsPage });
 
