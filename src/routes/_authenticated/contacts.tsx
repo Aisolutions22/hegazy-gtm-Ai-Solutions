@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Archive as ArchiveIcon, Pencil, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { useContacts, useArchiveContact, type ContactRow } from "@/hooks/use-contacts";
