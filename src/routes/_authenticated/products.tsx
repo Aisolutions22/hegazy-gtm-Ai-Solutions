@@ -105,7 +105,7 @@ function ProductsPage() {
               <div className="aluminium-divider" />
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {group.items.map((p) => (
-                  <Card key={p.id} className="hover:shadow-md transition">
+                  <Card key={p.id} className="transition-shadow duration-200 hover:shadow-md">
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between mb-2">
                         <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center"><Package className="h-5 w-5 text-primary" /></div>
