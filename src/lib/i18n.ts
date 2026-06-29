@@ -416,7 +416,7 @@ const resources = {
         noEvents: "لا توجد مواعيد هذا اليوم",
         kinds: { meeting: "اجتماع", task: "مهمة", opportunity: "فرصة" },
       },
-      settings: { title: "الإعدادات", profile: "الملف الشخصي", appearance: "المظهر", users: "المستخدمون", theme: "السمة", language: "اللغة", light: "فاتح", dark: "داكن" },
+      settings: { title: "الإعدادات", profile: "الملف الشخصي", appearance: "المظهر", users: "المستخدمون", sectors: "القطاعات", theme: "السمة", language: "اللغة", light: "فاتح", dark: "داكن" },
     },
   },
   en: {
