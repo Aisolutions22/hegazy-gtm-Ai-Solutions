@@ -41,7 +41,7 @@ function ProductsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [viewingId, setViewingId] = useState<string | null>(null);
 
-  const { data: products = [] } = useQuery<ProductRow[]>({
+  const { data: products = [], isLoading } = useQuery<ProductRow[]>({
     queryKey: ["products"],
     queryFn: async () => (await supabase.from("products").select("*").is("archived_at", null).order("created_at")).data as ProductRow[] ?? [],
   });
