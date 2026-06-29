@@ -25,7 +25,7 @@ function ContactsPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ContactRow | null>(null);
 
-  const { data: contacts = [] } = useContacts();
+  const { data: contacts = [], isLoading } = useContacts();
   const archive = useArchiveContact();
 
   const filtered = contacts.filter((c) => {
