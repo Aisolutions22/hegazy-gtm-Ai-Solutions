@@ -42,6 +42,7 @@ const resources = {
         settings: "الإعدادات",
         sales: "سجل المبيعات",
         contacts: "الأشخاص",
+        sectors: "القطاعات",
       },
       common: {
         search: "بحث",
