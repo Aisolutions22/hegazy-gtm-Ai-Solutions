@@ -12,6 +12,7 @@ import { Plus, Archive as ArchiveIcon, Pencil, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { useContacts, useArchiveContact, type ContactRow } from "@/hooks/use-contacts";
 import { ContactForm } from "@/components/contacts/contact-form";
+import { EntityAvatar } from "@/components/shared/avatar-upload";
 
 export const Route = createFileRoute("/_authenticated/contacts")({
   component: ContactsPage,
@@ -77,10 +78,11 @@ function ContactsPage() {
             {filtered.map((c) => (
               <TableRow key={c.id}>
                 <TableCell className="font-medium">
-                  <span className="inline-flex items-center gap-2">
-                    {c.full_name}
+                  <div className="flex items-center gap-2">
+                    <EntityAvatar name={c.full_name} url={c.avatar_url ?? null} size="sm" />
+                    <span>{c.full_name}</span>
                     {c.is_primary && <Badge variant="secondary" className="text-[9px]">{t("contacts.primary")}</Badge>}
-                  </span>
+                  </div>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">{c.job_title ?? "—"}</TableCell>
                 <TableCell className="text-sm">
