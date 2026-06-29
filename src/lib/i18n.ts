@@ -42,6 +42,7 @@ const resources = {
         settings: "الإعدادات",
         sales: "سجل المبيعات",
         contacts: "الأشخاص",
+        sectors: "القطاعات",
       },
       common: {
         search: "بحث",
@@ -193,7 +194,8 @@ const resources = {
       },
       navGroups: {
         gtm: "GTM",
-        revenue: "الإيرادات",
+        crm: "إدارة العملاء",
+        sales: "المبيعات",
         execution: "التنفيذ",
         intelligence: "الذكاء",
         system: "النظام",
@@ -436,7 +438,7 @@ const resources = {
         analytics: "Sales Analytics", tasks: "Tasks", calendar: "Calendar",
         meetings: "Meetings & Decisions", intelligence: "Strategic Intelligence",
         competitors: "Competitors", goals: "Goals & Roadmap", activity: "Activity Log",
-        archive: "Archive", settings: "Settings", sales: "Sales Records", contacts: "Contacts",
+        archive: "Archive", settings: "Settings", sales: "Sales Records", contacts: "Contacts", sectors: "Sectors",
       },
       common: {
         search: "Search", add: "Add", edit: "Edit", save: "Save", cancel: "Cancel",
@@ -559,7 +561,7 @@ const resources = {
         },
       },
       navGroups: {
-        gtm: "GTM", revenue: "Revenue", execution: "Execution",
+        gtm: "GTM", crm: "CRM", sales: "Sales", execution: "Execution",
         intelligence: "Intelligence", system: "System",
       },
       commandPalette: {

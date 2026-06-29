@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSectorsRouteImport } from './routes/_authenticated/sectors'
 import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
 import { Route as AuthenticatedRevenueCockpitRouteImport } from './routes/_authenticated/revenue-cockpit'
 import { Route as AuthenticatedProductsRouteImport } from './routes/_authenticated/products'
@@ -61,6 +62,11 @@ const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSectorsRoute = AuthenticatedSectorsRouteImport.update({
+  id: '/sectors',
+  path: '/sectors',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
@@ -181,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof AuthenticatedProductsRoute
   '/revenue-cockpit': typeof AuthenticatedRevenueCockpitRoute
   '/sales': typeof AuthenticatedSalesRoute
+  '/sectors': typeof AuthenticatedSectorsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/companies/$id': typeof AuthenticatedCompaniesIdRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/products': typeof AuthenticatedProductsRoute
   '/revenue-cockpit': typeof AuthenticatedRevenueCockpitRoute
   '/sales': typeof AuthenticatedSalesRoute
+  '/sectors': typeof AuthenticatedSectorsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/companies/$id': typeof AuthenticatedCompaniesIdRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/_authenticated/products': typeof AuthenticatedProductsRoute
   '/_authenticated/revenue-cockpit': typeof AuthenticatedRevenueCockpitRoute
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
+  '/_authenticated/sectors': typeof AuthenticatedSectorsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/companies_/$id': typeof AuthenticatedCompaniesIdRoute
@@ -260,6 +269,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/revenue-cockpit'
     | '/sales'
+    | '/sectors'
     | '/settings'
     | '/tasks'
     | '/companies/$id'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/revenue-cockpit'
     | '/sales'
+    | '/sectors'
     | '/settings'
     | '/tasks'
     | '/companies/$id'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/_authenticated/products'
     | '/_authenticated/revenue-cockpit'
     | '/_authenticated/sales'
+    | '/_authenticated/sectors'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
     | '/_authenticated/companies_/$id'
@@ -365,6 +377,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sectors': {
+      id: '/_authenticated/sectors'
+      path: '/sectors'
+      fullPath: '/sectors'
+      preLoaderRoute: typeof AuthenticatedSectorsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/sales': {
@@ -514,6 +533,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProductsRoute: typeof AuthenticatedProductsRoute
   AuthenticatedRevenueCockpitRoute: typeof AuthenticatedRevenueCockpitRoute
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
+  AuthenticatedSectorsRoute: typeof AuthenticatedSectorsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedCompaniesIdRoute: typeof AuthenticatedCompaniesIdRoute
@@ -537,6 +557,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProductsRoute: AuthenticatedProductsRoute,
   AuthenticatedRevenueCockpitRoute: AuthenticatedRevenueCockpitRoute,
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
+  AuthenticatedSectorsRoute: AuthenticatedSectorsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedCompaniesIdRoute: AuthenticatedCompaniesIdRoute,
