@@ -3,7 +3,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Building2, Package, Target, ListChecks, BarChart3, CalendarDays,
-  Users2, Brain, Swords, Goal, Activity, Archive, Settings, Compass, Sparkles,
+  Users2, Brain, Swords, Goal, Activity, Archive, Settings,
   Sun, Moon, Globe, LogOut, Search, Bell, Gauge, UserRound,
 } from "lucide-react";
 import {
@@ -29,8 +29,6 @@ const navGroups = (t: (k: string) => string) => [
     items: [
       { to: "/dashboard", icon: LayoutDashboard, label: t("nav.dashboard") },
       { to: "/revenue-cockpit", icon: Gauge, label: t("nav.revenueCockpit") },
-      { to: "/current-situation", icon: Compass, label: t("nav.currentSituation") },
-      { to: "/gtm", icon: Sparkles, label: t("nav.gtm") },
     ],
   },
   {

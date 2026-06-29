@@ -14,6 +14,7 @@ import {
   useDashboardKpis, useDashboardMonthly, useTopOpportunities,
   useTodayTasks, useUpcomingDeadlines, useRecentActivities, useRecentCompanies,
 } from "@/hooks/use-dashboard";
+import { useCountUp } from "@/hooks/use-count-up";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -31,13 +32,20 @@ function Dashboard() {
   const { data: activities } = useRecentActivities();
   const { data: recentCompanies } = useRecentCompanies();
 
+  const rev = useCountUp(kpis?.rev);
+  const profit = useCountUp(kpis?.profit);
+  const margin = useCountUp(kpis?.margin);
+  const tons = useCountUp(kpis?.tons);
+  const customers = useCountUp(kpis?.customers);
+  const openOpps = useCountUp(kpis?.openOpps);
+
   const kpiCards = [
-    { label: t("dashboard.revenueYtd"), value: fmtCurrency(kpis?.rev, locale), icon: DollarSign },
-    { label: t("dashboard.profitYtd"), value: fmtCurrency(kpis?.profit, locale), icon: TrendingUp },
-    { label: t("dashboard.avgMargin"), value: fmtPercent(kpis?.margin, locale), icon: Percent },
-    { label: t("dashboard.tonsYtd"), value: fmtNumber(kpis?.tons, locale), icon: Package },
-    { label: t("dashboard.activeCustomers"), value: fmtNumber(kpis?.customers, locale), icon: Users },
-    { label: t("dashboard.openOpps"), value: fmtNumber(kpis?.openOpps, locale), icon: Target },
+    { label: t("dashboard.revenueYtd"), value: fmtCurrency(rev, locale), icon: DollarSign },
+    { label: t("dashboard.profitYtd"), value: fmtCurrency(profit, locale), icon: TrendingUp },
+    { label: t("dashboard.avgMargin"), value: fmtPercent(margin, locale), icon: Percent },
+    { label: t("dashboard.tonsYtd"), value: fmtNumber(tons, locale), icon: Package },
+    { label: t("dashboard.activeCustomers"), value: fmtNumber(Math.round(customers), locale), icon: Users },
+    { label: t("dashboard.openOpps"), value: fmtNumber(Math.round(openOpps), locale), icon: Target },
   ];
 
   const chartHasData = (monthly ?? []).some((m) => m.revenue || m.profit || m.tons);

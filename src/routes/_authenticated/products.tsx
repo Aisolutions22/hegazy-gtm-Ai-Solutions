@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Archive as ArchiveIcon, Package, Pencil, Building2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCompaniesDialog } from "@/components/products/product-companies-dialog";
 
 import { toast } from "sonner";
@@ -40,7 +41,7 @@ function ProductsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [viewingId, setViewingId] = useState<string | null>(null);
 
-  const { data: products = [] } = useQuery<ProductRow[]>({
+  const { data: products = [], isLoading } = useQuery<ProductRow[]>({
     queryKey: ["products"],
     queryFn: async () => (await supabase.from("products").select("*").is("archived_at", null).order("created_at")).data as ProductRow[] ?? [],
   });
@@ -76,7 +77,19 @@ function ProductsPage() {
       } />
 
       <div className="space-y-6">
-        {grouped.length === 0 && (
+        {isLoading && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={`sk-${i}`}><CardContent className="p-5 space-y-3">
+                <div className="flex justify-between"><Skeleton className="h-10 w-10 rounded-lg" /><Skeleton className="h-6 w-20" /></div>
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-1/3" />
+              </CardContent></Card>
+            ))}
+          </div>
+        )}
+        {!isLoading && grouped.length === 0 && (
           <Card><CardContent className="p-8 text-center text-muted-foreground">{t("common.empty")}</CardContent></Card>
         )}
         {grouped.map((group) => {
@@ -92,7 +105,7 @@ function ProductsPage() {
               <div className="aluminium-divider" />
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {group.items.map((p) => (
-                  <Card key={p.id} className="hover:shadow-md transition">
+                  <Card key={p.id} className="transition-shadow duration-200 hover:shadow-md">
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between mb-2">
                         <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center"><Package className="h-5 w-5 text-primary" /></div>

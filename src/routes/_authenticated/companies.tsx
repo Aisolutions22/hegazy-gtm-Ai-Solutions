@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { Plus, Archive as ArchiveIcon, Pencil } from "lucide-react";
 import { toast } from "sonner";
@@ -34,7 +35,7 @@ function CompaniesPage() {
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const { data: companies = [] } = useCompaniesList();
+  const { data: companies = [], isLoading } = useCompaniesList();
   const { data: sectors = [] } = useSectors();
   const archive = useArchiveCompany();
 
@@ -94,7 +95,18 @@ function CompaniesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.length === 0 && (
+            {isLoading && Array.from({ length: 6 }).map((_, i) => (
+              <TableRow key={`sk-${i}`}>
+                <TableCell><div className="flex items-center gap-2"><Skeleton className="h-8 w-8 rounded-full" /><Skeleton className="h-4 w-32" /></div></TableCell>
+                <TableCell><Skeleton className="h-5 w-16" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                <TableCell />
+              </TableRow>
+            ))}
+            {!isLoading && filtered.length === 0 && (
               <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">{t("common.empty")}</TableCell></TableRow>
             )}
             {filtered.map((c) => (

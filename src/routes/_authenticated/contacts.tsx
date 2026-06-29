@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Archive as ArchiveIcon, Pencil, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import { useContacts, useArchiveContact, type ContactRow } from "@/hooks/use-contacts";
@@ -24,7 +25,7 @@ function ContactsPage() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ContactRow | null>(null);
 
-  const { data: contacts = [] } = useContacts();
+  const { data: contacts = [], isLoading } = useContacts();
   const archive = useArchiveContact();
 
   const filtered = contacts.filter((c) => {
@@ -67,7 +68,17 @@ function ContactsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.length === 0 && (
+            {isLoading && Array.from({ length: 6 }).map((_, i) => (
+              <TableRow key={`sk-${i}`}>
+                <TableCell><div className="flex items-center gap-2"><Skeleton className="h-8 w-8 rounded-full" /><Skeleton className="h-4 w-32" /></div></TableCell>
+                <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-28" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                <TableCell />
+              </TableRow>
+            ))}
+            {!isLoading && filtered.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                   <UserRound className="h-6 w-6 mx-auto mb-2 opacity-50" />

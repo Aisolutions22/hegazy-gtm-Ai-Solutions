@@ -326,9 +326,11 @@ const resources = {
         upload: "رفع صورة",
         change: "تغيير",
         remove: "إزالة",
-        tooLarge: "الصورة كبيرة جداً (الحد الأقصى 4 ميغابايت)",
+        tooLarge: "الصورة كبيرة جداً (الحد الأقصى 8 ميغابايت)",
         invalidType: "ملفات الصور فقط",
         hintCreate: "احفظ أولاً ثم ارفع صورة.",
+        cropTitle: "اقتصاص الصورة",
+        zoom: "تكبير",
       },
 
       contacts: {
@@ -657,9 +659,11 @@ const resources = {
         upload: "Upload",
         change: "Change",
         remove: "Remove",
-        tooLarge: "Image too large (max 4MB)",
+        tooLarge: "Image too large (max 8MB)",
         invalidType: "Image files only",
         hintCreate: "Save first, then upload an image.",
+        cropTitle: "Crop image",
+        zoom: "Zoom",
       },
       contacts: {
         title: "Contacts",

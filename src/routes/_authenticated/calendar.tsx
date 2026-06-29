@@ -18,6 +18,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useCalendarEvents, type CalendarEvent, type CalendarEventKind } from "@/hooks/use-calendar";
 
@@ -35,7 +36,7 @@ function CalendarPage() {
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const [selected, setSelected] = useState<Date | null>(null);
 
-  const { data: events = [] } = useCalendarEvents(month);
+  const { data: events = [], isLoading } = useCalendarEvents(month);
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
@@ -100,6 +101,13 @@ function CalendarPage() {
             ))}
           </div>
 
+          {isLoading ? (
+            <div className="grid grid-cols-7 gap-1">
+              {Array.from({ length: 42 }).map((_, i) => (
+                <Skeleton key={i} className="min-h-[88px] rounded-md" />
+              ))}
+            </div>
+          ) : (
           <div className="grid grid-cols-7 gap-1">
             {gridDays.map((day) => {
               const iso = format(day, "yyyy-MM-dd");
@@ -180,6 +188,7 @@ function CalendarPage() {
               );
             })}
           </div>
+          )}
         </CardContent>
       </Card>
     </div>
