@@ -10,7 +10,8 @@ import { Undo2 } from "lucide-react";
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activity";
 
-const TABLES = ["companies", "products", "opportunities", "tasks", "sales_records"] as const;
+// IMPORTANT: When adding a new soft-deletable table (with archived_at), add it here so it appears in Archive for restoration.
+const TABLES = ["companies", "products", "opportunities", "tasks", "sales_records", "contacts", "meetings", "company_notes"] as const;
 type TableName = (typeof TABLES)[number];
 
 export const Route = createFileRoute("/_authenticated/archive")({ component: ArchivePage });
@@ -21,7 +22,9 @@ function ArchivePage() {
     <div>
       <PageHeader title={t("archive.title")} />
       <Tabs defaultValue="companies">
-        <TabsList>{TABLES.map((tb) => <TabsTrigger key={tb} value={tb}>{tb}</TabsTrigger>)}</TabsList>
+        <div className="overflow-x-auto">
+          <TabsList>{TABLES.map((tb) => <TabsTrigger key={tb} value={tb}>{tb}</TabsTrigger>)}</TabsList>
+        </div>
         {TABLES.map((tb) => <TabsContent key={tb} value={tb}><ArchiveList table={tb} /></TabsContent>)}
       </Tabs>
     </div>
@@ -46,7 +49,7 @@ function ArchiveList({ table }: { table: TableName }) {
       {data.length === 0 && <p className="text-center text-muted-foreground py-8">{t("archive.empty")}</p>}
       <div className="divide-y">{data.map((row: Record<string, unknown>) => (
         <div key={String(row.id)} className="p-3 flex items-center justify-between text-sm">
-          <span>{String(row.name ?? row.title ?? row.name_en ?? row.id)}</span>
+          <span>{String(row.name ?? row.full_name ?? row.title ?? row.name_en ?? (row.note ? String(row.note).slice(0, 60) + "…" : null) ?? row.id)}</span>
           <Button size="sm" variant="ghost" onClick={() => restore(String(row.id))}><Undo2 className="h-4 w-4 me-1" />{t("common.restore")}</Button>
         </div>
       ))}</div>
