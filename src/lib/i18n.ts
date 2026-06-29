@@ -194,7 +194,8 @@ const resources = {
       },
       navGroups: {
         gtm: "GTM",
-        revenue: "الإيرادات",
+        crm: "إدارة العملاء",
+        sales: "المبيعات",
         execution: "التنفيذ",
         intelligence: "الذكاء",
         system: "النظام",
