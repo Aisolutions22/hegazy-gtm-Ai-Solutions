@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EntityAvatar } from "@/components/shared/avatar-upload";
 import { Dialog } from "@/components/ui/dialog";
 import { fmtCurrency, fmtMonth } from "@/lib/format";
 import { ArrowLeft, Briefcase, ListTodo, CalendarDays, StickyNote, Pencil, Users, Package } from "lucide-react";
@@ -50,9 +50,7 @@ function Company360() {
       {/* Header */}
       <Card className="metal-card">
         <CardContent className="p-4 flex items-center gap-4">
-          <Avatar className="h-14 w-14">
-            <AvatarFallback className="text-lg font-bold gradient-primary text-primary-foreground">{company.name[0]}</AvatarFallback>
-          </Avatar>
+          <EntityAvatar name={company.name} url={(company as { logo_url?: string | null }).logo_url ?? null} size="xl" />
           <div className="flex-1 min-w-0">
             <h1 className="text-xl font-bold truncate">{company.name}</h1>
             <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-muted-foreground">
