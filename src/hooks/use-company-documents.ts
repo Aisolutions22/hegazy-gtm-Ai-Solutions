@@ -20,21 +20,25 @@ export function useCompanyDocuments(companyId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("company_documents" as never)
-        .select("*, creator:profiles!company_documents_created_by_fkey(full_name,email)")
+        .select("*")
         .eq("company_id", companyId)
         .is("archived_at", null)
         .order("created_at", { ascending: false });
-      if (error) {
-        // Fallback if FK alias not auto-detected
-        const fb = await supabase
-          .from("company_documents" as never)
-          .select("*")
-          .eq("company_id", companyId)
-          .is("archived_at", null)
-          .order("created_at", { ascending: false });
-        return (fb.data ?? []) as unknown as CompanyDocument[];
+      if (error) throw error;
+      const docs = (data ?? []) as unknown as CompanyDocument[];
+      const ids = Array.from(new Set(docs.map((d) => d.created_by).filter(Boolean))) as string[];
+      if (ids.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("id,full_name,email")
+          .in("id", ids);
+        const map = new Map((profiles ?? []).map((p) => [p.id, p]));
+        for (const d of docs) {
+          const p = d.created_by ? map.get(d.created_by) : null;
+          d.creator = p ? { full_name: p.full_name, email: p.email } : null;
+        }
       }
-      return (data ?? []) as unknown as CompanyDocument[];
+      return docs;
     },
   });
 }
