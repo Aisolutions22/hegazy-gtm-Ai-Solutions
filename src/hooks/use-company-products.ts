@@ -11,6 +11,7 @@ export type CompanyProductRow = {
     id: string;
     name_en: string;
     name_ar: string;
+    specialty?: string | null;
     default_margin: number | string;
     sector?: { id: string; name_en: string; name_ar: string } | null;
   } | null;
@@ -23,7 +24,7 @@ export function useCompanyProducts(companyId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("company_products" as never)
-        .select("id,company_id,product_id,notes,product:products(id,name_en,name_ar,default_margin,sector:sectors(id,name_en,name_ar))")
+        .select("id,company_id,product_id,notes,product:products(id,name_en,name_ar,specialty,default_margin,sector:sectors(id,name_en,name_ar))")
         .eq("company_id", companyId);
       if (error) throw error;
       return (data ?? []) as unknown as CompanyProductRow[];

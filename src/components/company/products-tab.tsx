@@ -116,6 +116,9 @@ export function ProductsTab({ companyId }: { companyId: string }) {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-medium truncate">{ar ? l.product?.name_ar : l.product?.name_en}</div>
+                {l.product?.specialty && (
+                  <div className="text-xs text-muted-foreground italic mt-0.5">{l.product.specialty}</div>
+                )}
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mt-0.5">
                   {l.product?.sector && (
                     <Badge variant="outline" className="text-[9px]">
