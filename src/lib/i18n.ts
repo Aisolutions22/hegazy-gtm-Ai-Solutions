@@ -717,7 +717,7 @@ const resources = {
         noEvents: "No events this day",
         kinds: { meeting: "Meeting", task: "Task", opportunity: "Opportunity" },
       },
-      settings: { title: "Settings", profile: "Profile", appearance: "Appearance", users: "Users", theme: "Theme", language: "Language", light: "Light", dark: "Dark" },
+      settings: { title: "Settings", profile: "Profile", appearance: "Appearance", users: "Users", sectors: "Sectors", theme: "Theme", language: "Language", light: "Light", dark: "Dark" },
     },
   },
 };
