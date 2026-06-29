@@ -14,6 +14,7 @@ import {
   useDashboardKpis, useDashboardMonthly, useTopOpportunities,
   useTodayTasks, useUpcomingDeadlines, useRecentActivities, useRecentCompanies,
 } from "@/hooks/use-dashboard";
+import { useCountUp } from "@/hooks/use-count-up";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
