@@ -3,7 +3,7 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Building2, Package, Target, ListChecks, BarChart3, CalendarDays,
-  Users2, Brain, Swords, Goal, Activity, Archive, Settings, Compass, Sparkles,
+  Users2, Brain, Swords, Goal, Activity, Archive, Settings,
   Sun, Moon, Globe, LogOut, Search, Bell, Gauge, UserRound,
 } from "lucide-react";
 import {
